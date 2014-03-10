@@ -15,5 +15,7 @@ Angular
 > karma  
 > jasmine  
 
+    This is some code man
+    $sudo npm install grunt-contrib-jasmine --save-dev
 
 
