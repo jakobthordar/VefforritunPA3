@@ -9,9 +9,9 @@ The latest creation from the minds of IRC v2.0,  Kristleifur and Jakob.
 Angular
 
 ####NPM
-> Cssmin  
-> uglify  
-> concat  
+> 1. Cssmin  
+> 2. uglify  
+> > concat  
 > karma  
 > jasmine  
 
