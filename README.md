@@ -10,13 +10,13 @@ The latest creation from the minds of IRC v2.0,  Kristleifur and Jakob.
 Angular
 
 ####NPM
-1. cssmin  
+* cssmin  
     $sudo npm install grunt-contrib-cssmin --save-dev
-2. uglify  
+* uglify  
     $sudo npm install grunt-contrib-uglify --save-dev
-3. concat  
+* concat  
     $sudo npm install grunt-contrib-concat --save-dev
-4. karma  
+* karma  
     $sudo npm install grunt-karma --save-dev
-5. jasmine  
+* jasmine  
     $sudo npm install grunt-contrib-jasmine --save-dev
