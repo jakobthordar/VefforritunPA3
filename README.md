@@ -3,20 +3,20 @@ VefforritunPA3
 
 The latest creation from the minds of IRC v2.0,  Kristleifur and Jakob.
 
-######Dependencies
+#Dependencies
 
 
-####Bower
+###Bower
 Angular
 
-####NPM
-### cssmin  
+###NPM
+#### cssmin  
     $sudo npm install grunt-contrib-cssmin --save-dev
-### uglify  
+#### uglify  
     $sudo npm install grunt-contrib-uglify --save-dev
-### concat  
+#### concat  
     $sudo npm install grunt-contrib-concat --save-dev
-### karma  
+#### karma  
     $sudo npm install grunt-karma --save-dev
-### jasmine  
+#### jasmine  
     $sudo npm install grunt-contrib-jasmine --save-dev
