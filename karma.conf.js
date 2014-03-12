@@ -20,7 +20,7 @@ module.exports = function(config) {
       'src/*.js',
       'src/js/*.js',
       'src/js/**/*.js',
-      'test/*.js',
+      'test/**/*.js',
     ],
 
 
