@@ -6,8 +6,13 @@ app.controller("LoginController", [
 			password: ""
 		};
 
-		$scope.login = function() {
+		$scope.login = function(login) {
 			console.log("Logged in");
-		}
+			ApiFactory.login(login.user, login.pass).then(function(data) {
+				console.log("THE TOKEN: " + data);
+			}, function(errorMessage) {
+				console.log("Could not log in."); 
+			});
+		};
 	}
 ]); 

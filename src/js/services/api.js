@@ -1,6 +1,6 @@
 app.factory("ApiFactory", [
-	"$q", "$timeout",
-	function($q, $timeout) {
+	"$q", "$timeout", "$http",
+	function($q, $timeout, $http) {
 		function createEvaluation(id, titleIS, titleEN, introIS, introEN) {
 			return {
 				ID: id,
@@ -40,6 +40,8 @@ app.factory("ApiFactory", [
 		}
 
 		var evaluations = generateEvaluations();
+		var serviceUrl = "http://project3api.haukurhaf.net/";
+		var token = ""; 
 
         /* We have access to these functions in our app */
 		return {
@@ -68,6 +70,20 @@ app.factory("ApiFactory", [
 				
 
 				return deferred.promise;
+			},
+			login: function(username, password) {
+				var deferred = $q.defer(); 
+
+				var data = $http.post(serviceUrl + "api/v1/login", {"user": username, "pass": password}).
+				success(function (data, status, headers, config) {
+					token = data.Token;
+					deferred.resolve(token);
+				}).
+				error(function(data, status, headers, config) {
+					deferred.reject("Failed to log in.");
+				});
+
+				return deferred.promise; 
 			}
 		};
 	}

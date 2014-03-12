@@ -1,21 +1,27 @@
+//Create the module 
 var app = angular.module("EvaluationApp", ["ngRoute"]);
 
+//This defines the routing throughout the app 
 app.config(function($routeProvider) {
-	$routeProvider.when("/", {
+	$routeProvider.when("/home/", {
 		templateUrl: "templates/home.html",
 		controller: "HomeController"
 	}).when("/evaluation/:evaluationID", {
+		//this is where the routeparams are created
 		templateUrl: "templates/evaluation.html",
 		controller: "EvaluationController"
 	}).when("/evaluation/", {
 		templateUrl: "templates/evaluation.html",
 		controller: "EvaluationController"
+	}).when("/", {
+		templateUrl: "templates/login.html", 
+		controller: "LoginController"
 	}).otherwise({ redirectTo: "/"});
 });
 app.controller("EvaluationController", [
 	"$scope", "ApiFactory", "$routeParams",
 	function($scope, ApiFactory, $routeParams) {
-		var evaluationID = $routeParams.evaluationID;
+		var evaluationID = $routeParams.lelele;
 
 		if(evaluationID !== undefined) {
 			ApiFactory.getEvaluationById(evaluationID).then(function(data) {
@@ -65,6 +71,19 @@ app.controller("HomeController", [
 		});
 	}
 ]);
+app.controller("LoginController", [
+	"$scope", "ApiFactory",  
+	function($scope, ApiFactory) {
+		$scope.login = {
+			userName: "",
+			password: ""
+		};
+
+		$scope.login = function() {
+			console.log("Logged in");
+		};
+	}
+]); 
 app.factory("ApiFactory", [
 	"$q", "$timeout",
 	function($q, $timeout) {
