@@ -1,19 +1,35 @@
 describe('Testing the evaluation controller', function () {
 
-    var $scope = null;
-    var ctrl = null;
+    var $scope, ctrl, $timeout;
+    
+    var ApiFactoryMock;
 
-    beforeEach(module('evaluationApp'));
+    beforeEach(function(){
 
-    beforeEach(inject(function($rootScope, $controller){
-        $scope = $rootScope.$new();
+        apiFactoryMock = jasmine.createSpyObj('ApiFactory', ['someAsyncCall']);
 
-        ctrl = $controller('evalutaionController', {
-            $scope: $scope;
+        module('EvaluationApp');
+
+        inject(function($rootScope, $controller, $q, _$timeout_) {
+            $scope = $rootScope.$new();
+
+            apiFactoryMock.someAsyncCall.andReturn($q.when('weee'));
+
+            $timeout = _$timeout_;
+
+            ctrl = $controller('EvaluationController', {
+                $scope: $scope,
+                ApiFactory: ApiFactoryMock
+            });
         });
-    }));
+    });
 
-    it("should test something", function() {
-        expect($scope.name).toEqual('World');
+
+    it('should do something important', function() {
+        expect(true).toBe(true);
+    });
+
+    it('should do something stupid', function() {
+        expect(true).toBe(true);
     });
 });

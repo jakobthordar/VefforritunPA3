@@ -41,6 +41,7 @@ app.factory("ApiFactory", [
 
 		var evaluations = generateEvaluations();
 
+        /* We have access to these functions in our app */
 		return {
 			getAllEvaluations: function() {
 				var deferred = $q.defer();
