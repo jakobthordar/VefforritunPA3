@@ -41,7 +41,6 @@ app.factory("ApiFactory", [
 
 		var evaluations = generateEvaluations();
 		var serviceUrl = "http://project3api.haukurhaf.net/";
-		var token = ""; 
 
         /* We have access to these functions in our app */
 		return {
@@ -75,9 +74,8 @@ app.factory("ApiFactory", [
 				var deferred = $q.defer(); 
 
 				var data = $http.post(serviceUrl + "api/v1/login", {"user": username, "pass": password}).
-				success(function (data, status, headers, config) {
-					token = data.Token;
-					deferred.resolve(token);
+				success(function (data, status, headers, config) { 
+					deferred.resolve(data);
 				}).
 				error(function(data, status, headers, config) {
 					deferred.reject("Failed to log in.");
