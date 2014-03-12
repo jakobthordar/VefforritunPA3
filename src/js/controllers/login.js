@@ -1,6 +1,6 @@
 app.controller("LoginController", [
-	"$scope", "ApiFactory",  
-	function($scope, ApiFactory) {
+	"$scope", "ApiFactory", "$location",
+	function($scope, ApiFactory, $location) {
 		$scope.login = {
 			userName: "",
 			password: ""
@@ -10,6 +10,7 @@ app.controller("LoginController", [
 			console.log("Logged in");
 			ApiFactory.login(login.user, login.pass).then(function(data) {
 				console.log("THE TOKEN: " + data);
+				$location.path("/home/");
 			}, function(errorMessage) {
 				console.log("Could not log in."); 
 			});
