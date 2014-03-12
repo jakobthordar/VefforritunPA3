@@ -1,7 +1,7 @@
 app.controller("EvaluationController", [
 	"$scope", "ApiFactory", "$routeParams",
 	function($scope, ApiFactory, $routeParams) {
-		var evaluationID = $routeParams.evaluationID;
+		var evaluationID = $routeParams.lelele;
 
 		if(evaluationID !== undefined) {
 			ApiFactory.getEvaluationById(evaluationID).then(function(data) {
