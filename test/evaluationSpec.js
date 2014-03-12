@@ -2,8 +2,9 @@ describe('Testing the evaluation controller', function () {
 
     var $scope, ctrl, $timeout;
     
-    var ApiFactoryMock;
+    var apiFactoryMock;
 
+    /* Not sure if and how this works, á eftir að testa async calls */
     beforeEach(function(){
 
         apiFactoryMock = jasmine.createSpyObj('ApiFactory', ['someAsyncCall']);
@@ -19,12 +20,13 @@ describe('Testing the evaluation controller', function () {
 
             ctrl = $controller('EvaluationController', {
                 $scope: $scope,
-                ApiFactory: ApiFactoryMock
+                apiFactory: apiFactoryMock
             });
         });
     });
 
 
+    /* These are dummy tests for testing if karma works */
     it('should do something important', function() {
         expect(true).toBe(true);
     });
@@ -32,4 +34,5 @@ describe('Testing the evaluation controller', function () {
     it('should do something stupid', function() {
         expect(true).toBe(true);
     });
+
 });
