@@ -41,6 +41,8 @@ app.factory("ApiFactory", [
 
 		var evaluations = generateEvaluations();
 		var serviceUrl = "http://project3api.haukurhaf.net/";
+		var user = ""; 
+		var token = ""; 
 
         /* We have access to these functions in our app */
 		return {
@@ -82,6 +84,8 @@ app.factory("ApiFactory", [
 				var data = $http.post(serviceUrl + "api/v1/login", {"user": username, "pass": password}).
 				success(function (data, status, headers, config) { 
 					$http.defaults.headers.common.Authorization = 'Basic ' + data.Token; 
+					user = data.User; 
+					token = data.Token; 
 					deferred.resolve(data);
 				}).
 				error(function (data, status, headers, config) {
@@ -93,8 +97,8 @@ app.factory("ApiFactory", [
 			newEvaluation: function(templateId, startDate, endDate) {
 				var deferred = $q.defer(); 
 
-				var data = $http.post(serviceUrl + "POST api/v1/evaluations", {"TemplateID": templateId, "StartDate": startDate, "EndDate": endDate}).
-				success(funtion (data, status, headers, config) {
+				var data = $http.post(serviceUrl + "api/v1/evaluations", {"TemplateID": templateId, "StartDate": startDate, "EndDate": endDate}).
+				success(function (data, status, headers, config) {
 					deferred.resolve(data); 
 				}).
 				error(function (data, status, headers, config) {
@@ -102,6 +106,26 @@ app.factory("ApiFactory", [
 				}); 
 
 				return deferred.promise; 
+			},
+			newTemplate: function(id, titleIS, titleEN, introTextIS, introTextEN, courseQuestions) { 
+				var deferred = $q.defer();
+
+				var data = $http.post(serviceUrl + "api/v1/evaluationtemplates", 
+					{"ID": id, "TitleIS": titleIS, "TitleEN": titleEN, "IntroTextIS": introTextIS, "IntroTextEN": introTextEN, "CourseQuestions": courseQuestions}).
+				success(function (data, status, headers, config) {
+					deferred.resolve(data); 
+				}).
+				error(function (data, status, headers, config) {
+					deferred.reject("Failed to submit new template"); 
+				}); 
+
+				return deferred.promise; 
+			},
+			getUser: function() {
+				return user; 
+			},
+			getToken: function() {
+				return token; 
 			}
 		};
 	}
