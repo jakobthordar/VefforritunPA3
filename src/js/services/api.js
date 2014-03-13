@@ -47,7 +47,13 @@ app.factory("ApiFactory", [
 			getAllEvaluations: function() {
 				var deferred = $q.defer();
 
-				deferred.resolve(evaluations);
+				var data = $http.get(serviceUrl + "api/v1/evaluations").
+				success(function (data, status, headers, config) {
+					deferred.resolve(data); 
+				}).
+				error(function(data, status, headers, config) {
+					deferred.reject("Failed to get evaluations."); 
+				}); 
 			
 				return deferred.promise;
 			},
@@ -75,6 +81,7 @@ app.factory("ApiFactory", [
 
 				var data = $http.post(serviceUrl + "api/v1/login", {"user": username, "pass": password}).
 				success(function (data, status, headers, config) { 
+					$http.defaults.headers.common.Authorization = 'Basic ' + data.Token; 
 					deferred.resolve(data);
 				}).
 				error(function(data, status, headers, config) {
