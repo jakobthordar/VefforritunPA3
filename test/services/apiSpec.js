@@ -4,8 +4,16 @@ describe('Testing the ApiFactory', function(){
     beforeEach(function (){
         module('EvaluationApp');
 
-        inject(function(_ApiFactory_) {
+        inject(function(_ApiFactory_, _$q_) {
+            var deferred = _$q_.defer();
             apiFactory = _ApiFactory_;
+
+            deferred.resolve('resolvedData');
+            spyOn(apiFactory, 'getAllEvaluations').andReturn(deferred.promise);
+            spyOn(apiFactory, 'getEvaluationById').andReturn(deferred.promise);
+            spyOn(apiFactory, 'addEvaluation').andReturn(deferred.promise);
+            spyOn(apiFactory, 'login').andReturn(deferred.promise);
+            
         });
     });
 
@@ -16,6 +24,5 @@ describe('Testing the ApiFactory', function(){
     });
 
     it('return an evaluation by id', function() {
-        
     });
 });
