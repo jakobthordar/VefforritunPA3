@@ -84,9 +84,22 @@ app.factory("ApiFactory", [
 					$http.defaults.headers.common.Authorization = 'Basic ' + data.Token; 
 					deferred.resolve(data);
 				}).
-				error(function(data, status, headers, config) {
+				error(function (data, status, headers, config) {
 					deferred.reject("Failed to log in.");
 				});
+
+				return deferred.promise; 
+			},
+			newEvaluation: function(templateId, startDate, endDate) {
+				var deferred = $q.defer(); 
+
+				var data = $http.post(serviceUrl + "POST api/v1/evaluations", {"TemplateID": templateId, "StartDate": startDate, "EndDate": endDate}).
+				success(funtion (data, status, headers, config) {
+					deferred.resolve(data); 
+				}).
+				error(function (data, status, headers, config) {
+					deferred.reject("Failed to submit evaluation"); 
+				}); 
 
 				return deferred.promise; 
 			}
