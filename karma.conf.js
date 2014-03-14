@@ -17,7 +17,6 @@ module.exports = function(config) {
       'bower_components/angular/angular.js',
       'bower_components/angular-route/angular-route.js',
       'bower_components/angular-mocks/angular-mocks.js',
-      'src/*.js',
       'src/js/*.js',
       'src/js/**/*.js',
       'test/**/*.js',
@@ -30,10 +29,15 @@ module.exports = function(config) {
     ],
 
 
+
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-    reporters: ['progress'],
+    reporters: ['progress', 'coverage'],
 
+    preprocessors: {
+        'src/js/**/*.js': 'coverage',
+        'src/js/*.js': 'coverage'
+    },
 
     // web server port
     port: 9876,

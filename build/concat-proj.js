@@ -61,6 +61,16 @@ app.controller("EvaluationController", [
 app.controller("HomeController", [
 	"$scope", "ApiFactory",
 	function($scope, ApiFactory) {
+
+		$scope.showButton = (function () {
+			if (ApiFactory.getUser().Role == "admin") {
+				return true; 
+			}
+			else {
+				return false; 
+			}
+		});
+
 		ApiFactory.getAllEvaluations().then(function(data) {
 			console.log("Success, data: ", data);
 			$scope.evaluations = data;
@@ -72,8 +82,8 @@ app.controller("HomeController", [
 	}
 ]);
 app.controller("LoginController", [
-	"$scope", "ApiFactory",  
-	function($scope, ApiFactory) {
+	"$scope", "ApiFactory", "$location",
+	function($scope, ApiFactory, $location) {
 		$scope.login = {
 			userName: "",
 			password: ""
@@ -82,7 +92,11 @@ app.controller("LoginController", [
 		$scope.login = function(login) {
 			console.log("Logged in");
 			ApiFactory.login(login.user, login.pass).then(function(data) {
-				console.log("THE TOKEN: " + data);
+				//scope.user = data.User; 
+				//$scope.token = data.Token; 
+				console.log("THE TOKEN: " + ApiFactory.getToken());
+				console.log("Logged in as " + ApiFactory.getUser().Role); 
+				$location.path("/home/");
 			}, function(errorMessage) {
 				console.log("Could not log in."); 
 			});
@@ -132,6 +146,7 @@ app.factory("ApiFactory", [
 
 		var evaluations = generateEvaluations();
 		var serviceUrl = "http://project3api.haukurhaf.net/";
+		var user = ""; 
 		var token = ""; 
 
         /* We have access to these functions in our app */
@@ -139,7 +154,13 @@ app.factory("ApiFactory", [
 			getAllEvaluations: function() {
 				var deferred = $q.defer();
 
-				deferred.resolve(evaluations);
+				var data = $http.get(serviceUrl + "api/v1/evaluations").
+				success(function (data, status, headers, config) {
+					deferred.resolve(data); 
+				}).
+				error(function(data, status, headers, config) {
+					deferred.reject("Failed to get evaluations."); 
+				}); 
 			
 				return deferred.promise;
 			},
@@ -166,15 +187,50 @@ app.factory("ApiFactory", [
 				var deferred = $q.defer(); 
 
 				var data = $http.post(serviceUrl + "api/v1/login", {"user": username, "pass": password}).
-				success(function (data, status, headers, config) {
-					token = data.Token;
-					deferred.resolve(token);
+				success(function (data, status, headers, config) { 
+					$http.defaults.headers.common.Authorization = 'Basic ' + data.Token; 
+					user = data.User; 
+					token = data.Token; 
+					deferred.resolve(data);
 				}).
-				error(function(data, status, headers, config) {
+				error(function (data, status, headers, config) {
 					deferred.reject("Failed to log in.");
 				});
 
 				return deferred.promise; 
+			},
+			newEvaluation: function(templateId, startDate, endDate) {
+				var deferred = $q.defer(); 
+
+				var data = $http.post(serviceUrl + "api/v1/evaluations", {"TemplateID": templateId, "StartDate": startDate, "EndDate": endDate}).
+				success(function (data, status, headers, config) {
+					deferred.resolve(data); 
+				}).
+				error(function (data, status, headers, config) {
+					deferred.reject("Failed to submit evaluation"); 
+				}); 
+
+				return deferred.promise; 
+			},
+			newTemplate: function(id, titleIS, titleEN, introTextIS, introTextEN, courseQuestions) { 
+				var deferred = $q.defer();
+
+				var data = $http.post(serviceUrl + "api/v1/evaluationtemplates", 
+					{"ID": id, "TitleIS": titleIS, "TitleEN": titleEN, "IntroTextIS": introTextIS, "IntroTextEN": introTextEN, "CourseQuestions": courseQuestions}).
+				success(function (data, status, headers, config) {
+					deferred.resolve(data); 
+				}).
+				error(function (data, status, headers, config) {
+					deferred.reject("Failed to submit new template"); 
+				}); 
+
+				return deferred.promise; 
+			},
+			getUser: function() {
+				return user; 
+			},
+			getToken: function() {
+				return token; 
 			}
 		};
 	}
