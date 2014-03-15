@@ -6,14 +6,13 @@ app.factory("ApiFactory", [
 		var user = ""; 
 		var token = ""; 
 
-        /* We have access to these functions in our app */
 		return {
 			getAllEvaluations: function() {
 				var deferred = $q.defer();
 
 				var data = $http.get(serviceUrl + "api/v1/evaluations").
 				success(function (data, status, headers, config) {
-					deferred.resolve(data); 
+                    deferred.resolve(data); 
 				}).
 				error(function(data, status, headers, config) {
 					deferred.reject("Failed to get evaluations."); 

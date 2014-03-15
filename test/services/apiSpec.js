@@ -1,5 +1,6 @@
 describe('Testing the ApiFactory', function(){
     var ApiFactory, timeout, httpMock, rootScope;
+    var serviceUrl = 'http://project3api.haukurhaf.net/';
 
     beforeEach(function (){
         module('EvaluationApp');
@@ -10,6 +11,8 @@ describe('Testing the ApiFactory', function(){
             timeout = _$timeout_;
             httpMock = _$httpBackend_;
             rootScope = _$rootScope_;
+            httpMock.when('POST', serviceUrl + 'api/v1/login').respond({User: "jakobt12", Token: "xxx"});
+
 
             deferred.resolve('resolvedData');
             spyOn(ApiFactory, 'getAllEvaluations').andReturn(deferred.promise);
@@ -19,10 +22,10 @@ describe('Testing the ApiFactory', function(){
         });
     });
 
-    afterEach(function() {
-        httpMock.verifyNoOutstandingExpectation();
-        httpMock.verifyNoOutstandingRequest();
-    });
+    //afterEach(function() {
+    //    httpMock.verifyNoOutstandingExpectation();
+    //    httpMock.verifyNoOutstandingRequest();
+    //});
 
     it('should have all its functions', function() {
         expect(angular.isFunction(ApiFactory.getAllEvaluations)).toBe(true);
@@ -45,18 +48,21 @@ describe('Testing the ApiFactory', function(){
     });
 
     it('getUser() should return the user after he has logged in', function() {
-		var serviceUrl = "http://project3api.haukurhaf.net/";
+
+        ApiFactory.login('jakobt12', '123456').then(function(data){
+            expect(ApiFactory.getUser()).toBe(data.User);
+            expect(data.User).toBe('jakobt12');
+
+            expect(ApiFactory.getToken()).toBe(data.Token);
+            expect(data.Token).toBe("xxx");
+        });
+        httpMock.expectPOST(serviceUrl + "api/v1/login");
         httpMock.flush();
-
-
-        //httpMock.expectPOST(serviceUrl + "api/c1/login", 
-        //    {"user": username, "pass": password}).respond(201,);
     });
 
     it('should be able to log a person in', function() {
         var result;
         var returnData;
-
 
         ApiFactory.login('jakobt12', '123456').then(function(data){
             result = data;
