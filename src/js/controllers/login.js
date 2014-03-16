@@ -2,10 +2,10 @@ app.controller("LoginController", [
 	"$scope", "ApiFactory", "$location",
 	function($scope, ApiFactory, $location) {
         //This is currently not in use
-		$scope.loginCred = {
+		/*$scope.loginCred = {
 			userName: "",
 			password: ""
-		};
+		};*/
         $scope.token = "";
         $scope.user = "";
 
