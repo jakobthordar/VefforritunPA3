@@ -1,13 +1,16 @@
 describe('Testing the ApiFactory', function(){
     var ApiFactory, timeout, httpMock, rootScope;
     var serviceUrl = 'http://project3api.haukurhaf.net/';
+    var user = 'jakobt12';
+    var pass = '123456';
 
     beforeEach(function (){
         module('EvaluationApp');
-        inject(function(_ApiFactory_, _$q_, _$httpBackend_, _$rootScope_) {
+        inject(function(_ApiFactory_, _$httpBackend_, _$rootScope_) {
             ApiFactory = _ApiFactory_;
             httpMock = _$httpBackend_;
             rootScope = _$rootScope_.$new();
+            /* Mock a response from the Api when we POST, GET would be similar */
             httpMock.when('POST', serviceUrl + 'api/v1/login').respond({User: "jakobt12", Token: "xxx"});
         });
     });
@@ -31,12 +34,9 @@ describe('Testing the ApiFactory', function(){
     });
 
     it('getUser() should return the user after he has logged in', function() {
-        var user = 'jakobt12';
-        var pass = '123456';
-
         ApiFactory.login(user, pass).then(function(data){
             expect(ApiFactory.getUser()).toBe(data.User);
-            expect(data.User).toBe('jakobt12');
+            expect(data.User).toBe('jakobt12'); /* Note this is the same as in our mock */
 
             expect(ApiFactory.getToken()).toBe(data.Token);
             expect(data.Token).toBe("xxx");
@@ -46,7 +46,7 @@ describe('Testing the ApiFactory', function(){
     });
 
     it('should be able to log a person in', function() {
-        ApiFactory.login('jakobt12', '123456').then(function(data){
+        ApiFactory.login(user, pass).then(function(data){
             expect(data).toBeDefined;
             expect(data).toBe('resolvedData');
         });

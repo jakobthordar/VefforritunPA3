@@ -8,6 +8,7 @@ describe('Testing the login controller, it', function() {
     beforeEach(function(){
         module('EvaluationApp');
         inject(function(_$rootScope_, _$controller_, _$q_) {
+            /* This mocks the ApiFactory service */
             ApiFactory = {
                 login: function(user, pass) {
                     deferred = _$q_.defer();
@@ -20,13 +21,13 @@ describe('Testing the login controller, it', function() {
                     return dataMock.Token;
                 }
             };
-            rootScope = _$rootScope_.$new();
+            /* Spy on the service and call it */
             spyOn(ApiFactory, 'login').andCallThrough();
-
+            rootScope = _$rootScope_.$new();
+            /* This mocks the controller */
             ctrl = _$controller_('LoginController', {
                 $scope: rootScope,
                 ApiFactory: ApiFactory,
-                q: _$q_
             });
         });
     });
@@ -49,11 +50,11 @@ describe('Testing the login controller, it', function() {
 
     it('should be able to log a person in', function() {
         rootScope.login({user: "jakobt12", pass: "123456"});
-        deferred.resolve(dataMock);
+        deferred.resolve(dataMock); /* Resolve the promise with our data mock */
         rootScope.$digest();
         expect(ApiFactory.login).toHaveBeenCalled();
-        expect(rootScope.token).toBe("tokenDummy");
-        expect(rootScope.user).toBe("userDummy");
+        expect(rootScope.token).toBe(dataMock.Token);
+        expect(rootScope.user).toBe(dataMock.User);
     });
 
     it('should redirect you correctly', function() {
