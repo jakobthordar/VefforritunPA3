@@ -50,6 +50,7 @@ describe('Testing the login controller, it', function() {
 
     it('should be able to log a person in', function() {
         rootScope.login({user: "jakobt12", pass: "123456"});
+
         deferred.resolve(dataMock); /* Resolve the promise with our data mock */
         rootScope.$digest();
         expect(ApiFactory.login).toHaveBeenCalled();

@@ -11,7 +11,6 @@ describe('Testing the ApiFactory', function(){
             httpMock = _$httpBackend_;
             rootScope = _$rootScope_.$new();
             /* Mock a response from the Api when we POST, GET would be similar */
-            httpMock.when('POST', serviceUrl + 'api/v1/login').respond({User: "jakobt12", Token: "xxx"});
         });
     });
 
@@ -33,22 +32,19 @@ describe('Testing the ApiFactory', function(){
         expect(ApiFactory.getUser()).toBeDefined;
     });
 
-    it('getUser() should return the user after he has logged in', function() {
+    it('should be able to log a person in', function() {
+        httpMock.when('POST', serviceUrl + 'api/v1/login').respond({User: "jakobt12", Token: "xxx"});
         ApiFactory.login(user, pass).then(function(data){
             expect(ApiFactory.getUser()).toBe(data.User);
             expect(data.User).toBe('jakobt12'); /* Note this is the same as in our mock */
 
             expect(ApiFactory.getToken()).toBe(data.Token);
             expect(data.Token).toBe("xxx");
-        });
-        httpMock.expectPOST(serviceUrl + "api/v1/login");
-        httpMock.flush();
-    });
-
-    it('should be able to log a person in', function() {
-        ApiFactory.login(user, pass).then(function(data){
+            
             expect(data).toBeDefined;
             expect(data).toBe('resolvedData');
         });
+        httpMock.expectPOST(serviceUrl + "api/v1/login");
+        httpMock.flush();
     });
 });
