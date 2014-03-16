@@ -3,5 +3,5 @@
 	<li ng-repeat="evaluation in evaluations">
 		<a ng-href="#/evaluation/{{ evaluation.ID }}">{{ evaluation.TitleIS }}</a>
 	</li>
-	<button ng-show="showButton()" class="btn btn-mini" ng-click="">Add new evaluation</button>
+	<button ng-show="showButton()" class="btn btn-mini" ng-click="newEvaluation()">Add new evaluation</button>
 </ul>
