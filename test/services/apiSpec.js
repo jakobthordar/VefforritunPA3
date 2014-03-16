@@ -46,7 +46,7 @@ describe('Testing the ApiFactory', function(){
         expect(angular.isFunction(ApiFactory.addEvaluation)).toBe(true);
     });
 
-    it('return an evaluation by id', function() {
+    it('should return an evaluation by id', function() {
         httpMock.when('GET', serviceUrl + 'api/v1/evaluations/1').respond(evaluationsMock[0]); 
         ApiFactory.getEvaluationById(1).then(function (data) {
             expect(data).toBeDefined; 
@@ -54,6 +54,16 @@ describe('Testing the ApiFactory', function(){
             expect(data.Status).toBe('sample string 1'); 
             expect(data.EndDate).toBe('2014-03-16T14:42:25.2215468+00:00'); 
         });
+    });
+
+    it('should add an evaluation' , function () { 
+        httpMock.when('POST', serviceUrl + 'api/v1/evaluations').respond(200);
+        var newEvaluation = '{ "TemplateID": 1, "StartDate": "2014-03-16T14:42:19.7770528+00:00", "EndDate": "2014-03-16T14:42:19.7770528+00:00" }';
+        ApiFactory.addEvaluation(newEvaluation).then(function(data) {
+            
+        }); 
+        httpMock.expectPOST(serviceUrl + 'api/v1/evaluations');
+        httpMock.flush(); 
     });
 
     it('getUser() should return empty string when getUser is called without login', function() {

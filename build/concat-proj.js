@@ -149,7 +149,13 @@ app.factory("ApiFactory", [
 			addEvaluation: function(evaluation) {
 				var deferred = $q.defer();
 
-				
+				var data = $http.post(serviceUrl + "api/v1/evaluations", evaluation).
+				success(function (data, status, headers, config) {
+					deferred.resolve(data); 
+				}).
+				error(function (data, status, headers, config) {
+					deferred.reject("Failed to add evaluation"); 
+				}); 
 
 				return deferred.promise;
 			},
