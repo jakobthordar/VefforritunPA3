@@ -113,7 +113,8 @@ app.factory("ApiFactory", [
 	"$q", "$timeout", "$http",
 	function($q, $timeout, $http) {
 
-		var serviceUrl = "http://project3api.haukurhaf.net/";
+		//var serviceUrl = "http://project3api.haukurhaf.net/";
+		var serviceUrl = "http://dispatch.ru.is/H05/";
 		var user = ""; 
 		var token = ""; 
 

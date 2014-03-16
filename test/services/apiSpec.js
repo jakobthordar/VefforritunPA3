@@ -1,6 +1,6 @@
 describe('Testing the ApiFactory', function(){
     var ApiFactory, timeout, httpMock, rootScope;
-    var serviceUrl = 'http://project3api.haukurhaf.net/';
+    var serviceUrl = 'http://dispatch.ru.is/H05/';
     var user = 'jakobt12';
     var pass = '123456';
 
