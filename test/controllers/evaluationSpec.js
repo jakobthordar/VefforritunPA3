@@ -1,35 +1,41 @@
-describe('Testing the evaluation controller', function () {
+describe('Testing the evaluation controller, it', function () {
+    var rootScope, ctrl, $timeout, ApiFactory;
+    var evalDataMock = {
+        TitleIS: "dummyTitleIS",
+        TitleEN: "dummyTitleEN",
+        IntroTextIS: "dummyIntroTextIS",
+        IntroTextEN: "dummyIntroTestEN",
+        CourseQuestions: [],
+        TeacherQuestions: []
+    };
 
-    var rootScope, ctrl, $timeout, ApiFactory, httpBackend;
-    
-    //var apiFactoryMock;
+    var emptyEvalDataMock = {
+        TitleIS: "",
+        TitleEN: "",
+        IntroTextIS: "",
+        IntroTextEN: "",
+        CourseQuestions: [],
+        TeacherQuestions: []
+    };
 
     beforeEach(function(){
-
         module('EvaluationApp');
+        inject(function(_$rootScope_, _$controller_, _$q_) {
+            ApiFactory = {
+                getEvaluationById: function(evaluationID){
+                    deferred = _$q_.defer();
+                    return deferred.promise;
+                },
+            };
+            spyOn(ApiFactory, 'getEvaluationById').andCallThrough();
+            rootScope = _$rootScope_.$new();
 
-        inject(function($rootScope, $controller, _$httpBackend_,  _$q_, _$timeout_, _ApiFactory_) {
-            var deferred = _$q_.defer();
-
-            rootScope = $rootScope.$new();
-            ApiFactory = _ApiFactory_;
-            httpBackend = _$httpBackend_;
-            $timeout = _$timeout_;
-
-            deferred.resolve('resolvedData');
-            spyOn(ApiFactory, 'getEvaluationById').andReturn(deferred.promise);
-
-            ctrl = $controller('EvaluationController', {
+            ctrl = _$controller_('EvaluationController', {
                 $scope: rootScope,
-                ApiFactory: ApiFactory
+                ApiFactory: ApiFactory,
             });
         });
     });
-
-     afterEach(function() {
-         httpBackend.verifyNoOutstandingExpectation();
-         httpBackend.verifyNoOutstandingRequest();
-     });
 
     it('should have all its functions', function() {
         expect(angular.isFunction(rootScope.addCourseQuestion)).toBe(true);
@@ -66,8 +72,26 @@ describe('Testing the evaluation controller', function () {
 
     //TODO: This is not really doing anything
     it('should be able to get an Evaluation by id when evaluatinID is defined', function() {
-        evaluationID = 1;
+       rootScope.init(0);
 
-        expect(rootScope.evaluation).toBeDefined;
+       deferred.resolve(evalDataMock);
+       rootScope.$digest();
+       expect(ApiFactory.getEvaluationById).toHaveBeenCalled();
+       expect(rootScope.evaluation).toBe(evalDataMock);
+    });
+
+    it('should return an error if the evaluationID promise got rejected', function() {
+       rootScope.init(0);
+       var errorMessage = "Failed to get evaluation.";
+
+       deferred.reject(errorMessage);
+       rootScope.$digest();
+       expect(ApiFactory.getEvaluationById).toHaveBeenCalled();
+       expect(rootScope.errorMessage).toBe("Error fetching evaluation: " + errorMessage);
+    });
+
+    it('should create an empty evalutaion when evaluatinID is undefined', function() {
+        rootScope.init();
+        expect(rootScope.evaluation).toEqual(emptyEvalDataMock);
     });
 });

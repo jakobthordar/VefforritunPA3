@@ -42,7 +42,6 @@ describe('Testing the ApiFactory', function(){
             expect(data.Token).toBe("xxx");
             
             expect(data).toBeDefined;
-            expect(data).toBe('resolvedData');
         });
         httpMock.expectPOST(serviceUrl + "api/v1/login");
         httpMock.flush();

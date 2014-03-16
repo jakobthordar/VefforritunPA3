@@ -1,25 +1,29 @@
 app.controller("EvaluationController", [
 	"$scope", "ApiFactory", "$routeParams",
 	function($scope, ApiFactory, $routeParams) {
-		var evaluationID = $routeParams.evaluationID;
+		var evalID = $routeParams.evaluationID;
 
-		if(evaluationID !== undefined) {
-			ApiFactory.getEvaluationById(evaluationID).then(function(data) {
-				$scope.evaluation = data;
-			}, function(errorMessage) {
-				console.log("Error fetching evaluation: " + errorMessage);
-			});
-		}
-		else {
-			$scope.evaluation = {
-				TitleIS: "",
-				TitleEN: "",
-				IntroTextIS: "",
-				IntroTextEN: "",
-				CourseQuestions: [],
-				TeacherQuestions: []
-			};
-		}
+        $scope.init = function(evaluationID) {
+            if(evaluationID !== undefined) {
+                ApiFactory.getEvaluationById(evaluationID).then(function(data) {
+                    $scope.evaluation = data;
+                }, function(errorMessage) {
+                    console.log("Error fetching evaluation: " + errorMessage);
+                    $scope.errorMessage = "Error fetching evaluation: " + errorMessage;
+                });
+            }
+            else {
+                $scope.evaluation = {
+                    TitleIS: "",
+                    TitleEN: "",
+                    IntroTextIS: "",
+                    IntroTextEN: "",
+                    CourseQuestions: [],
+                    TeacherQuestions: []
+                };
+            }
+        };
+        $scope.init(evalID);
 
 		$scope.addAnswer = function(question) {
 			question.Answers.push("New answer");

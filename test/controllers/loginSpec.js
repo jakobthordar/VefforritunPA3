@@ -58,6 +58,12 @@ describe('Testing the login controller, it', function() {
         expect(rootScope.user).toBe(dataMock.User);
     });
 
-    it('should redirect you correctly', function() {
+    it('should return an error if the login promise got rejected', function() {
+        rootScope.login({user: "jakobt12", pass: "123456"});
+
+        deferred.reject("Could not log in.");
+        rootScope.$digest();
+        expect(ApiFactory.login).toHaveBeenCalled();
+        expect(rootScope.errorMessage).toBe("Could not log in.");
     });
 });
