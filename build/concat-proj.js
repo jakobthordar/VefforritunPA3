@@ -18,6 +18,7 @@ app.config(function($routeProvider) {
 		controller: "LoginController"
 	}).otherwise({ redirectTo: "/"});
 });
+
 app.controller("EvaluationController", [
 	"$scope", "ApiFactory", "$routeParams",
 	function($scope, ApiFactory, $routeParams) {
@@ -135,12 +136,13 @@ app.factory("ApiFactory", [
 			getEvaluationById: function(id) {
 				var deferred = $q.defer();
 
-				if(evaluations[id]) {
-					deferred.resolve(evaluations[id]);
-				}
-				else {
-					deferred.reject("No evaluation with this id");
-				}
+				var data = $http.get(serviceUrl + "api/v1/evaluations/" + id).
+				success(function (data, status, headers, config) {
+					deferred.resolve(data); 
+				}).
+				error(function (data, status, headers, config) {
+					deferred.reject("Failed to get ID " + id); 
+				}); 
 
 				return deferred.promise;
 			},
