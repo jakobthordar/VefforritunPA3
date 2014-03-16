@@ -1,6 +1,6 @@
 app.controller("HomeController", [
-	"$scope", "ApiFactory",
-	function($scope, ApiFactory) {
+	"$scope", "ApiFactory", "$location",
+	function($scope, ApiFactory, $location) {
 
 		$scope.showButton = (function () {
 			if (ApiFactory.getUser().Role == "admin") {
@@ -10,6 +10,10 @@ app.controller("HomeController", [
 				return false; 
 			}
 		});
+
+		$scope.newEvaluation = (function () {
+			$location.path("/evaluation/new");
+		}); 
 
 		ApiFactory.getAllEvaluations().then(function(data) {
 			console.log("Success, data: ", data);

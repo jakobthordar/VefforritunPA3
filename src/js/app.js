@@ -6,6 +6,9 @@ app.config(function($routeProvider) {
 	$routeProvider.when("/home/", {
 		templateUrl: "templates/home.html",
 		controller: "HomeController"
+	}).when("/evaluation/new", {
+		templateUrl: "templates/newEvaluation.html", 
+		controller: "EvaluationController"
 	}).when("/evaluation/:evaluationID", {
 		//this is where the routeparams are created
 		templateUrl: "templates/evaluation.html",

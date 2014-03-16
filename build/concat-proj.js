@@ -13,14 +13,21 @@ app.config(function($routeProvider) {
 	}).when("/evaluation/", {
 		templateUrl: "templates/evaluation.html",
 		controller: "EvaluationController"
+	}).when("/newEvaluation/", {
+		templateUrl: "templates/newEvaluation.html", 
+		controller: "EvaluationController"
 	}).when("/", {
 		templateUrl: "templates/login.html", 
 		controller: "LoginController"
 	}).otherwise({ redirectTo: "/"});
 });
+
 app.controller("EvaluationController", [
 	"$scope", "ApiFactory", "$routeParams",
 	function($scope, ApiFactory, $routeParams) {
+		
+		console.log($routeParams); 
+
 		var evaluationID = $routeParams.evaluationID;
 
 		if(evaluationID !== undefined) {
@@ -135,19 +142,26 @@ app.factory("ApiFactory", [
 			getEvaluationById: function(id) {
 				var deferred = $q.defer();
 
-				if(evaluations[id]) {
-					deferred.resolve(evaluations[id]);
-				}
-				else {
-					deferred.reject("No evaluation with this id");
-				}
+				var data = $http.get(serviceUrl + "api/v1/evaluations/" + id).
+				success(function (data, status, headers, config) {
+					deferred.resolve(data); 
+				}).
+				error(function (data, status, headers, config) {
+					deferred.reject("Failed to get ID " + id); 
+				}); 
 
 				return deferred.promise;
 			},
 			addEvaluation: function(evaluation) {
 				var deferred = $q.defer();
 
-				
+				var data = $http.post(serviceUrl + "api/v1/evaluations", evaluation).
+				success(function (data, status, headers, config) {
+					deferred.resolve(data); 
+				}).
+				error(function (data, status, headers, config) {
+					deferred.reject("Failed to add evaluation"); 
+				}); 
 
 				return deferred.promise;
 			},

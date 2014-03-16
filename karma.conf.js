@@ -17,7 +17,6 @@ module.exports = function(config) {
       'bower_components/angular/angular.js',
       'bower_components/angular-route/angular-route.js',
       'bower_components/angular-mocks/angular-mocks.js',
-      'src/js/*.js',
       'src/js/**/*.js',
       'test/**/*.js',
     ],
@@ -25,7 +24,7 @@ module.exports = function(config) {
 
     // list of files to exclude
     exclude: [
-      
+        'src/app.js'
     ],
 
 
