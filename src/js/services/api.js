@@ -52,7 +52,6 @@ app.factory("ApiFactory", [
 				error(function (data, status, headers, config) {
 					deferred.reject("Failed to log in.");
 				});
-
 				return deferred.promise; 
 			},
 			newEvaluation: function(templateId, startDate, endDate) {
