@@ -13,6 +13,9 @@ app.config(function($routeProvider) {
 	}).when("/evaluation/", {
 		templateUrl: "templates/evaluation.html",
 		controller: "EvaluationController"
+	}).when("/newEvaluation/", {
+		templateUrl: "templates/newEvaluation.html", 
+		controller: "EvaluationController"
 	}).when("/", {
 		templateUrl: "templates/login.html", 
 		controller: "LoginController"
@@ -22,6 +25,9 @@ app.config(function($routeProvider) {
 app.controller("EvaluationController", [
 	"$scope", "ApiFactory", "$routeParams",
 	function($scope, ApiFactory, $routeParams) {
+		
+		console.log($routeParams); 
+
 		var evaluationID = $routeParams.evaluationID;
 
 		if(evaluationID !== undefined) {

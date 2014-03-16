@@ -1,6 +1,15 @@
 app.controller("EvaluationController", [
-	"$scope", "ApiFactory", "$routeParams",
-	function($scope, ApiFactory, $routeParams) {
+	"$scope", "ApiFactory", "$routeParams", "$location", 
+	function($scope, ApiFactory, $routeParams, $location) {
+		
+		console.log($location.url()); 
+
+		if ($location.url() == "/evaluation/new") {
+
+		}
+		if ($location.url() == "/evaluation/") {
+			
+		}
 		var evaluationID = $routeParams.evaluationID;
 
 		if(evaluationID !== undefined) {

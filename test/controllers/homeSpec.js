@@ -1,6 +1,36 @@
 describe("Testing the home controller, it", function() {
     var rootScope, ctrl, ApiFactory, deferred;
 
+    var dataMock = {
+        User: "admin", 
+        Token: "abcdefg",
+        evaluations: [
+          {
+            "ID": 1,
+            "TemplateTitleIS": "sample string 2",
+            "TemplateTitleEN": "sample string 3",
+            "StartDate": "2014-03-16T14:42:25.2215468+00:00",
+            "EndDate": "2014-03-16T14:42:25.2215468+00:00",
+            "Status": "sample string 6"
+          },
+          {
+            "ID": 1,
+            "TemplateTitleIS": "sample string 2",
+            "TemplateTitleEN": "sample string 3",
+            "StartDate": "2014-03-16T14:42:25.2215468+00:00",
+            "EndDate": "2014-03-16T14:42:25.2215468+00:00",
+            "Status": "sample string 6"
+          },
+          {
+            "ID": 1,
+            "TemplateTitleIS": "sample string 2",
+            "TemplateTitleEN": "sample string 3",
+            "StartDate": "2014-03-16T14:42:25.2215468+00:00",
+            "EndDate": "2014-03-16T14:42:25.2215468+00:00",
+            "Status": "sample string 6"
+          }
+        ]
+    }
     beforeEach(function(){
         module('EvaluationApp');
         inject(function(_$rootScope_, _$controller_, _$q_) {
@@ -8,6 +38,7 @@ describe("Testing the home controller, it", function() {
             ApiFactory = {
                 getAllEvaluations: function() {
                     deferred = _$q_.defer();
+                    deferred.resolve(dataMock.evaluations);
                     return deferred.promise;
                 },
                 getToken: function() {
