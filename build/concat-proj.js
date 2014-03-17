@@ -87,6 +87,7 @@ app.controller("HomeController", [
 	"$scope", "ApiFactory", "$location",
 	function($scope, ApiFactory, $location) {
 
+        $scope.evaluations = [];
 		$scope.showButton = (function () {
 			if (ApiFactory.getUser().Role == "admin") {
 				return true; 
@@ -97,24 +98,37 @@ app.controller("HomeController", [
 		});
 
         $scope.editEvaluation = (function() {
+
         });
 
-		$scope.newEvaluation = (function () {
-			$location.path("/evaluation/new");
+		$scope.newEval = (function(evaluation) {
+            var dummyEval = {
+                "TemplateID": 1,
+                "StartDate": "2014-03-17T15:28:40.2360731+00:00",
+                "EndDate": "2014-03-17T15:28:40.2360731+00:00"
+            };
+            ApiFactory.addEvaluation(dummyEval).then(function(data) 
+            {
+                $scope.getAllEvals();
+            });
+			//$location.path("/evaluation/new");
 		}); 
 
 		$scope.newTemplate = (function () {
 			$location.path("/template/new"); 
 		});
 
-		ApiFactory.getAllEvaluations().then(function(data) {
-			console.log("Success, data: ", data);
-			$scope.evaluations = data;
-		}, function(errorMessage) {
-			console.log("Error: " + errorMessage);
-		}, function(updateMessage) {
-			console.log("Update: " + updateMessage);
-		});
+        $scope.getAllEvals = (function() {
+            $scope.status = "Waiting...";
+            ApiFactory.getAllEvaluations().then(function(data) {
+                //console.log("Success, data: ", data);
+                $scope.evaluations = data;
+                $scope.status = "Success.";
+            }, function(errorMessage) {
+                //console.log("Error: " + errorMessage);
+                $scope.status = "Error: " + errorMessage;
+            });
+        });
 	}
 ]);
 
@@ -133,12 +147,12 @@ password: ""
             ApiFactory.login(login.user, login.pass).then(function(data) {
                 $scope.user = data.User; 
                 $scope.token = data.Token; 
-                console.log("THE TOKEN: " + ApiFactory.getToken());
+                //console.log("THE TOKEN: " + ApiFactory.getToken());
                 //Role is currently undefined as per tests
                 //console.log("Logged in as " + ApiFactory.getUser().Role); 
                 $location.path("/home/");
             }, function(errorMessage) {
-                console.log("Could not log in."); 
+                //console.log("Could not log in."); 
                 $scope.errorMessage = "Could not log in.";
             });
         };
@@ -206,12 +220,12 @@ app.controller("TemplateController", [
 			if ($scope.infoSubmitted) {
 				var submitData = {
 					ID: 42, //this don't matter
-					TitleIS: templateInfo.TitleIS, 
-					TitleEN: templateInfo.TitleEN, 
-					IntroTextIS: templateInfo.IntroTextIS,
-					IntroTextEN: templateInfo.IntroTextEN, 
-					CourseQuestions: courseQuestions, 
-					TeacherQuestions: teacherQuestions
+					TitleIS: $scope.templateInfo.TitleIS, 
+					TitleEN: $scope.templateInfo.TitleEN, 
+					IntroTextIS: $scope.templateInfo.IntroTextIS,
+					IntroTextEN: $scope.templateInfo.IntroTextEN, 
+					CourseQuestions: $scope.courseQuestions, 
+					TeacherQuestions: $scope.teacherQuestions
 				};
 				ApiFactory.newTemplate(submitData);
 			} 
@@ -222,6 +236,34 @@ app.controller("TemplateController", [
 		$scope.init();	
 	}
 ]);
+
+app.directive('myPane', function() {
+    return {
+        require: '^myTabs',
+        restrict: 'E',
+        transclude: true,
+        scope: {
+            title: '@'
+        },
+        link: function(scope, element, attrs, tabsCtrl) {
+            tabsCtrl.addPane(scope);
+        },
+        templateUrl: 'my-pane.html'
+    };
+});
+
+app.directive('myAllEvaluations', function() {
+    return {
+        restrict: 'E',
+        transclude: true,
+        require: '^homeController',
+        scope: false,
+        templateUrl: 'my-tabs.html',
+        link: function(scope, element, attrs, homeCtrl) {
+
+        },
+    };
+});
 
 app.factory("ApiFactory", [
 	"$q", "$timeout", "$http",
@@ -235,12 +277,14 @@ app.factory("ApiFactory", [
 		return {
 			getAllEvaluations: function() {
 				var promise = $http.get(serviceUrl + "api/v1/evaluations").then(function(response) {
+                    //console.log("Response from getAllEvaluations: " + response.data);
                     return response.data;
                 });
 				return promise;
 			},
 			getEvaluationById: function(id) {
 				var promise = $http.get(serviceUrl + "api/v1/evaluations/" + id).then(function(response) {
+                    //console.log(response);
                     return response.data;
                 });
 
@@ -248,8 +292,11 @@ app.factory("ApiFactory", [
 			},
 			addEvaluation: function(evaluation) {
 				var promise = $http.post(serviceUrl + "api/v1/evaluations", evaluation).then(function(response) {
+                    console.log("Response: " + response);
+                    console.log("Response data: " + response.data);
                     return response.data;
                 });
+                console.log("Promise: " + promise);
 
 				return promise;
 			},

@@ -145,5 +145,8 @@ describe('Testing the template controller, it', function () {
         rootScope.courseQuestions = []; 
         rootScope.teacherQuestions = []; 
         rootScope.submitTemplate(); 
+        rootScope.infoSubmitted = false; 
+        rootScope.submitTemplate(); 
+        expect(rootScope.hideError).toBe(false);
     });
 });
