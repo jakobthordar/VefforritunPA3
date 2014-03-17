@@ -2,19 +2,57 @@
 var app = angular.module("EvaluationApp", ["ngRoute"]);
 
 //This defines the routing throughout the app 
-app.config(function($routeProvider) {
+app.config(function($routeProvider, $provide, $httpProvider) {
+
+//    $provide.factory('MyHttpInterceptor', function ($q) {
+//        return {
+//            // On request success
+//            request: function (config) {
+//                // console.log(config); // Contains the data about the request before it is sent.
+//
+//                // Return the config or wrap it in a promise if blank.
+//                return config || $q.when(config);
+//            },
+//
+//            // On request failure
+//            requestError: function (rejection) {
+//                // console.log(rejection); // Contains the data about the error on the request.
+//                // Return the promise rejection.
+//                return $q.reject(rejection);
+//            },
+//
+//            // On response success
+//            response: function (response) {
+//                // console.log(response); // Contains the data from the response.
+//                // Return the response or promise.
+//                return response || $q.when(response);
+//            },
+//
+//            // On response failture
+//            responseError: function (rejection) {
+//                // console.log(rejection); // Contains the data about the error.
+//                // Return the promise rejection.
+//                return $q.reject(rejection);
+//            }
+//        };
+//    });
+// 
+//// Add the interceptor to the $httpProvider.
+//$httpProvider.interceptors.push('MyHttpInterceptor');
+
+    
 	$routeProvider.when("/home/", {
 		templateUrl: "templates/home.html",
 		controller: "HomeController"
+	}).when("/evaluation/new", {
+		templateUrl: "templates/newEvaluation.html", 
+		controller: "EvaluationController"
 	}).when("/evaluation/:evaluationID", {
 		//this is where the routeparams are created
 		templateUrl: "templates/evaluation.html",
 		controller: "EvaluationController"
 	}).when("/evaluation/", {
 		templateUrl: "templates/evaluation.html",
-		controller: "EvaluationController"
-	}).when("/newEvaluation/", {
-		templateUrl: "templates/newEvaluation.html", 
 		controller: "EvaluationController"
 	}).when("/", {
 		templateUrl: "templates/login.html", 
@@ -23,30 +61,40 @@ app.config(function($routeProvider) {
 });
 
 app.controller("EvaluationController", [
-	"$scope", "ApiFactory", "$routeParams",
-	function($scope, ApiFactory, $routeParams) {
+	"$scope", "ApiFactory", "$routeParams", "$location", 
+	function($scope, ApiFactory, $routeParams, $location) {
+		var evalID = $routeParams.evaluationID;
 		
-		console.log($routeParams); 
+		//console.log($location.url()); 
 
-		var evaluationID = $routeParams.evaluationID;
+		if ($location.url() == "/evaluation/new") {
 
-		if(evaluationID !== undefined) {
-			ApiFactory.getEvaluationById(evaluationID).then(function(data) {
-				$scope.evaluation = data;
-			}, function(errorMessage) {
-				console.log("Error fetching evaluation: " + errorMessage);
-			});
 		}
-		else {
-			$scope.evaluation = {
-				TitleIS: "",
-				TitleEN: "",
-				IntroTextIS: "",
-				IntroTextEN: "",
-				CourseQuestions: [],
-				TeacherQuestions: []
-			};
+		if ($location.url() == "/evaluation/") {
+			
 		}
+
+        $scope.init = function(evaluationID) {
+            if(evaluationID !== undefined) {
+                ApiFactory.getEvaluationById(evaluationID).then(function(data) {
+                    $scope.evaluation = data;
+                }, function(errorMessage) {
+                    console.log("Error fetching evaluation: " + errorMessage);
+                    $scope.errorMessage = "Error fetching evaluation: " + errorMessage;
+                });
+            }
+            else {
+                $scope.evaluation = {
+                    TitleIS: "",
+                    TitleEN: "",
+                    IntroTextIS: "",
+                    IntroTextEN: "",
+                    CourseQuestions: [],
+                    TeacherQuestions: []
+                };
+            }
+        };
+        $scope.init(evalID);
 
 		$scope.addAnswer = function(question) {
 			question.Answers.push("New answer");
@@ -66,8 +114,8 @@ app.controller("EvaluationController", [
 ]);
 
 app.controller("HomeController", [
-	"$scope", "ApiFactory",
-	function($scope, ApiFactory) {
+	"$scope", "ApiFactory", "$location",
+	function($scope, ApiFactory, $location) {
 
 		$scope.showButton = (function () {
 			if (ApiFactory.getUser().Role == "admin") {
@@ -77,6 +125,10 @@ app.controller("HomeController", [
 				return false; 
 			}
 		});
+
+		$scope.newEvaluation = (function () {
+			$location.path("/evaluation/new");
+		}); 
 
 		ApiFactory.getAllEvaluations().then(function(data) {
 			console.log("Success, data: ", data);
@@ -90,30 +142,30 @@ app.controller("HomeController", [
 ]);
 
 app.controller("LoginController", [
-	"$scope", "ApiFactory", "$location",
-	function($scope, ApiFactory, $location) {
+    "$scope", "ApiFactory", "$location",
+    function($scope, ApiFactory, $location) {
         //This is currently not in use
-		$scope.loginCred = {
-			userName: "",
-			password: ""
-		};
+        $scope.loginCred = {
+            userName: "",
+password: ""
+        };
         $scope.token = "";
         $scope.user = "";
 
-		$scope.login = function(login) {
-			console.log("Logged in");
-			ApiFactory.login(login.user, login.pass).then(function(data) {
-				$scope.user = data.User; 
-				$scope.token = data.Token; 
-				console.log("THE TOKEN: " + ApiFactory.getToken());
+        $scope.login = function(login) {
+            ApiFactory.login(login.user, login.pass).then(function(data) {
+                $scope.user = data.User; 
+                $scope.token = data.Token; 
+                console.log("THE TOKEN: " + ApiFactory.getToken());
                 //Role is currently undefined as per tests
-				console.log("Logged in as " + ApiFactory.getUser().Role); 
-				$location.path("/home/");
-			}, function(errorMessage) {
-				console.log("Could not log in."); 
-			});
-		};
-	}
+                //console.log("Logged in as " + ApiFactory.getUser().Role); 
+                $location.path("/home/");
+            }, function(errorMessage) {
+                console.log("Could not log in."); 
+                $scope.errorMessage = "Could not log in.";
+            });
+        };
+    }
 ]); 
 
 app.factory("ApiFactory", [
@@ -127,85 +179,45 @@ app.factory("ApiFactory", [
 
 		return {
 			getAllEvaluations: function() {
-				var deferred = $q.defer();
-
-				var data = $http.get(serviceUrl + "api/v1/evaluations").
-				success(function (data, status, headers, config) {
-                    deferred.resolve(data); 
-				}).
-				error(function(data, status, headers, config) {
-					deferred.reject("Failed to get evaluations."); 
-				}); 
-			
-				return deferred.promise;
+				var promise = $http.get(serviceUrl + "api/v1/evaluations").then(function(response) {
+                    return response.data;
+                });
+				return promise;
 			},
 			getEvaluationById: function(id) {
-				var deferred = $q.defer();
+				var promise = $http.get(serviceUrl + "api/v1/evaluations/" + id).then(function(response) {
+                    return response.data;
+                });
 
-				var data = $http.get(serviceUrl + "api/v1/evaluations/" + id).
-				success(function (data, status, headers, config) {
-					deferred.resolve(data); 
-				}).
-				error(function (data, status, headers, config) {
-					deferred.reject("Failed to get ID " + id); 
-				}); 
-
-				return deferred.promise;
+				return promise;
 			},
 			addEvaluation: function(evaluation) {
-				var deferred = $q.defer();
+				var promise = $http.post(serviceUrl + "api/v1/evaluations", evaluation).then(function(response) {
+                    return response.data;
+                });
 
-				var data = $http.post(serviceUrl + "api/v1/evaluations", evaluation).
-				success(function (data, status, headers, config) {
-					deferred.resolve(data); 
-				}).
-				error(function (data, status, headers, config) {
-					deferred.reject("Failed to add evaluation"); 
-				}); 
-
-				return deferred.promise;
+				return promise;
 			},
 			login: function(username, password) {
-				var deferred = $q.defer(); 
-
-				var data = $http.post(serviceUrl + "api/v1/login", {"user": username, "pass": password}).
-				success(function (data, status, headers, config) { 
-					$http.defaults.headers.common.Authorization = 'Basic ' + data.Token; 
-					user = data.User; 
-					token = data.Token; 
-					deferred.resolve(data);
-				}).
-				error(function (data, status, headers, config) {
-					deferred.reject("Failed to log in.");
+				var promise = $http.post(serviceUrl + "api/v1/login", {"user": username, "pass": password}).then(function(response) { 
+					$http.defaults.headers.common.Authorization = 'Basic ' + response.data.Token; 
+					user = response.data.User; 
+					token = response.data.Token; 
+                    return response.data;
 				});
-				return deferred.promise; 
+				return promise; 
 			},
 			newEvaluation: function(templateId, startDate, endDate) {
-				var deferred = $q.defer(); 
-
-				var data = $http.post(serviceUrl + "api/v1/evaluations", {"TemplateID": templateId, "StartDate": startDate, "EndDate": endDate}).
-				success(function (data, status, headers, config) {
-					deferred.resolve(data); 
-				}).
-				error(function (data, status, headers, config) {
-					deferred.reject("Failed to submit evaluation"); 
-				}); 
-
-				return deferred.promise; 
+				var promise = $http.post(serviceUrl + "api/v1/evaluations", {"TemplateID": templateId, "StartDate": startDate, "EndDate": endDate}).then(function(response) {
+                    return response.data;
+				});
+				return promise; 
 			},
 			newTemplate: function(id, titleIS, titleEN, introTextIS, introTextEN, courseQuestions) { 
-				var deferred = $q.defer();
-
-				var data = $http.post(serviceUrl + "api/v1/evaluationtemplates", 
-					{"ID": id, "TitleIS": titleIS, "TitleEN": titleEN, "IntroTextIS": introTextIS, "IntroTextEN": introTextEN, "CourseQuestions": courseQuestions}).
-				success(function (data, status, headers, config) {
-					deferred.resolve(data); 
-				}).
-				error(function (data, status, headers, config) {
-					deferred.reject("Failed to submit new template"); 
-				}); 
-
-				return deferred.promise; 
+				var promise = $http.post(serviceUrl + "api/v1/evaluationtemplates", {"ID": id, "TitleIS": titleIS, "TitleEN": titleEN, "IntroTextIS": introTextIS, "IntroTextEN": introTextEN, "CourseQuestions": courseQuestions}).then(function(response){
+                        return response.data;
+                    }); 
+				return promise; 
 			},
 			getUser: function() {
 				return user; 

@@ -24,7 +24,6 @@ module.exports = function(config) {
 
     // list of files to exclude
     exclude: [
-        'src/app.js'
     ],
 
 
@@ -35,7 +34,6 @@ module.exports = function(config) {
 
     preprocessors: {
         'src/js/**/*.js': 'coverage',
-        'src/js/*.js': 'coverage'
     },
 
     // web server port

@@ -31,15 +31,6 @@ module.exports = function(grunt) {
                 configFile: 'karma.conf.js'
             }
         },
-        jasmine: {
-            pivotal: {
-                src: 'src/**/*.js',
-                options: {
-                    specs: 'spec/*Spec.js',
-                    helpers: 'spec/*Helper.js'
-                }
-            }
-        },
     });
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
