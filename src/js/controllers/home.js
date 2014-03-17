@@ -16,7 +16,7 @@ app.controller("HomeController", [
 
         });
 
-		$scope.newEval = (function (eval) {
+		$scope.newEval = (function(evaluation) {
             var dummyEval = {
                 "TemplateID": 1,
                 "StartDate": "2014-03-17T15:28:40.2360731+00:00",

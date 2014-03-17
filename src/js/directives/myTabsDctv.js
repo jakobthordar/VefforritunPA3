@@ -4,8 +4,9 @@ app.directive('myAllEvaluations', function() {
         transclude: true,
         require: '^homeController',
         scope: false,
-        templateUrl: 'my-tabs.html'
+        templateUrl: 'my-tabs.html',
         link: function(scope, element, attrs, homeCtrl) {
+
         },
     };
 });
