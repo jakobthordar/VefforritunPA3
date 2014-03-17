@@ -10,12 +10,14 @@ app.factory("ApiFactory", [
 		return {
 			getAllEvaluations: function() {
 				var promise = $http.get(serviceUrl + "api/v1/evaluations").then(function(response) {
+                    //console.log("Response from getAllEvaluations: " + response.data);
                     return response.data;
                 });
 				return promise;
 			},
 			getEvaluationById: function(id) {
 				var promise = $http.get(serviceUrl + "api/v1/evaluations/" + id).then(function(response) {
+                    //console.log(response);
                     return response.data;
                 });
 
@@ -23,8 +25,11 @@ app.factory("ApiFactory", [
 			},
 			addEvaluation: function(evaluation) {
 				var promise = $http.post(serviceUrl + "api/v1/evaluations", evaluation).then(function(response) {
+                    console.log("Response: " + response);
+                    console.log("Response data: " + response.data);
                     return response.data;
                 });
+                console.log("Promise: " + promise);
 
 				return promise;
 			},

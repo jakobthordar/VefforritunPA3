@@ -64,8 +64,27 @@ describe('Testing the ApiFactory, it', function(){
 
     it('should add an evaluation' , function () { 
         httpMock.when('POST', serviceUrl + 'api/v1/evaluations').respond(200);
-        var newEvaluation = { "TemplateID": 1, "StartDate": "2014-03-16T14:42:19.7770528+00:00", "EndDate": "2014-03-16T14:42:19.7770528+00:00" };
+        var newEvaluation = { 
+            "TemplateID": 1, 
+            "StartDate": "2014-03-16T14:42:19.7770528+00:00",
+            "EndDate": "2014-03-16T14:42:19.7770528+00:00" 
+        };
         ApiFactory.addEvaluation(newEvaluation).then(function(data) {
+            //TODO: Test more harder
+            expect(data).toBeDefined;
+        }); 
+        httpMock.expectPOST(serviceUrl + 'api/v1/evaluations');
+        httpMock.flush(); 
+    });
+
+    it('should add an evaluation' , function () { 
+        httpMock.when('POST', serviceUrl + 'api/v1/evaluations').respond(200);
+        var newEval = { 
+            "TemplateID": 1, 
+            "StartDate": "2014-03-16T14:42:19.7770528+00:00",
+            "EndDate": "2014-03-16T14:42:19.7770528+00:00" 
+        };
+        ApiFactory.newEvaluation(newEval.TemplateID, newEval.StartDate, newEval.EndDate).then(function(data) {
             //TODO: Test more harder
             expect(data).toBeDefined;
         }); 
