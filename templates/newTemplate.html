@@ -4,7 +4,21 @@
 
  
 	<li ng-repeat="courseQuestion in courseQuestions">
-		{{ courseQuestion.TextIS }}
+		<h2>Question number: {{ courseQuestion.ID }} </h2>
+		TextIS: {{ courseQuestion.TextIS }} </br>
+		TextEN: {{ courseQuestion.TextEN }} </br>
+		ImageURL: {{ courseQuestion.ImageURL }} </br>
+		Type: {{ courseQuestion.Type }} </br>
 	</li>
-	<button class="btn btn-mini" ng-click="addCourseQuestion()">Add new course question</button> 
+	<div ng-hide="hideQuestionForm">
+		<form name="questionForm" novalidate>
+			<h3>New Question: </h3>
+			<input ng-model="question.TextIS" placeholder="TitleIS" class="form-control">
+			<input ng-model="question.TextEN" placeholder="TitleEN" class="form-control">
+			<input ng-model="question.ImageURL" placeholder="ImageURL" class="form-control">
+			<input ng-model="question.Type" placeholder="Type" class="form-control">
+			<button class="btn btn-mini" ng-click="submitQuestion(question)">Add question</button>
+		</form>
+	</div>
+	<button ng-hide="!hideQuestionForm" class="btn btn-mini" ng-click="displayQuestionForm()">Add question</button> 
 </ul>

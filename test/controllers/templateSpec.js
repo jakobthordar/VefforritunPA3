@@ -40,11 +40,14 @@ describe('Testing the template controller, it', function () {
     it('should have all its functions', function() {
         expect(angular.isFunction(rootScope.addCourseQuestion)).toBe(true);
         expect(angular.isFunction(rootScope.init)).toBe(true);
+        expect(angular.isFunction(rootScope.submitQuestion)).toBe(true);
+        expect(angular.isFunction(rootScope.displayQuestionForm)).toBe(true);
     });
 
-    it('should have all its variable', function() {
+    it('should have all its variables', function() {
         expect(angular.isDefined(rootScope.courseQuestions)); 
         expect(angular.isDefined(rootScope.teacherQuestions));
+        expect(angular.isDefined(rootScope.showQuestionForm)); 
     }); 
 
     it('should be able to add a new question to its view', function () {
@@ -57,5 +60,20 @@ describe('Testing the template controller, it', function () {
         rootScope.addCourseQuestion(); 
         expect(rootScope.courseQuestions.length).toBe(2);
         expect(rootScope.courseQuestions[1].TextIS).toBe("Spurning 1");
-    })
+    });
+
+    it('should be able to accept a submitted question', function() {
+        var newQuestion = {
+            ID: 1, 
+            TextIS: "Texti", 
+            TextEN: "Text", 
+            ImageURL: "ImageURL", 
+            Type: "Type", 
+            Answers: []
+        };
+        rootScope.submitQuestion(newQuestion); 
+        expect(rootScope.courseQuestions.length).toBe(1); 
+        expect(rootScope.courseQuestions[0].ID).toBe(0); 
+        expect(rootScope.hideQuestionForm).toBe(true);
+    });
 });

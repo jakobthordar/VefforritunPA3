@@ -183,15 +183,39 @@ app.controller("TemplateController", [
 	"$scope", "ApiFactory", "$routeParams", "$location", 
 	function($scope, ApiFactory, $routeParams, $location) {
 
-        $scope.init = function(evaluationID) {
+		$scope.init = function() {
 			$scope.courseQuestions = []; 
 			$scope.teacherQuestions = []; 
-        };
-        $scope.addCourseQuestion = (function () {
-			console.log("testing");
+			$scope.hideQuestionForm = true; 
+		};
+		$scope.addCourseQuestion = (function () {
+			var newQuestion = {
+				ID: $scope.courseQuestions.length, 
+				TextIS: "Spurning " + $scope.courseQuestions.length,
+				TextEN: "Question " + $scope.courseQuestions.length, 
+				ImageURL: "Image URL", 
+				Type: "Question type", 
+				Answers: []
+			};
+			$scope.courseQuestions.push(newQuestion); 
+		});
+		$scope.submitQuestion = ( function(question) {
+			$scope.courseQuestions.push( {
+				ID: $scope.courseQuestions.length,
+				TextIS: question.TextIS, 
+				TextEN: question.TextEN, 
+				ImageURL: question.ImageURL, 
+				Type: question.Type
+			});
+			$scope.hideQuestionForm = true; 
+			$scope.questionForm.$setPristine();
 		});
 
-        //$scope.init(evalID);	
+		$scope.displayQuestionForm = ( function() {
+			$scope.hideQuestionForm = false; 
+		});
+
+		$scope.init();	
 	}
 ]);
 
