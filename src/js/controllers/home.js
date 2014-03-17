@@ -11,6 +11,9 @@ app.controller("HomeController", [
 			}
 		});
 
+        $scope.editEvaluation = (function() {
+        });
+
 		$scope.newEvaluation = (function () {
 			$location.path("/evaluation/new");
 		}); 
