@@ -35,6 +35,10 @@ describe("Testing the home controller, it", function() {
         "StartDate": "2014-03-17T15:28:40.2360731+00:00",
         "EndDate": "2014-03-17T15:28:40.2360731+00:00"
     };
+    var userMock = {
+        "Role": "admin"
+    };
+
 
     beforeEach(function(){
         module('EvaluationApp');
@@ -50,15 +54,16 @@ describe("Testing the home controller, it", function() {
                     return deferred.promise;
                 },
                 getToken: function() {
-                    return dataMock.User;
+                    return dataMock.Token;
                 },
                 getUser: function() {
-                    return dataMock.Token;
+                    return userMock;
                 }
             };
             /* Spy on the service and call it */
             spyOn(ApiFactory, 'getAllEvaluations').andCallThrough();
             spyOn(ApiFactory, 'addEvaluation').andCallThrough();
+            spyOn(ApiFactory, 'getUser').andCallThrough();
             rootScope = _$rootScope_.$new();
             /* This mocks the controller */
             ctrl = _$controller_('HomeController', {
@@ -76,6 +81,12 @@ describe("Testing the home controller, it", function() {
         expect(ApiFactory.getAllEvaluations).toHaveBeenCalled();
         expect(rootScope.evaluations).toEqual(evalListMock.evaluations);
         expect(rootScope.status).toEqual("Success.");
+    });
+
+    it('should only show an add new eval button for admins', function() {
+        var foo = rootScope.showButton();
+        expect(ApiFactory.getUser).toHaveBeenCalled();
+        expect(foo).toBe(true);
     });
 
     it('should reject if get all evaluations fails', function() {
