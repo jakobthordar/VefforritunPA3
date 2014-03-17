@@ -30,7 +30,7 @@ app.factory("ApiFactory", [
 			},
 			login: function(username, password) {
 				var promise = $http.post(serviceUrl + "api/v1/login", {"user": username, "pass": password}).then(function(response) { 
-					$http.defaults.headers.common.Authorization = 'Basic ' + response.Token; 
+					$http.defaults.headers.common.Authorization = 'Basic ' + response.data.Token; 
 					user = response.data.User; 
 					token = response.data.Token; 
                     return response.data;

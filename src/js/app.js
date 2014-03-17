@@ -44,7 +44,12 @@ app.config(function($routeProvider, $provide, $httpProvider) {
 	$routeProvider.when("/home/", {
 		templateUrl: "templates/home.html",
 		controller: "HomeController"
-	}).when("/evaluation/new", {
+	}).
+	when("/template/new", {
+		templateUrl : "templates/newTemplate.html", 
+		controller: "TemplateController"
+	})
+	.when("/evaluation/new", {
 		templateUrl: "templates/newEvaluation.html", 
 		controller: "EvaluationController"
 	}).when("/evaluation/:evaluationID", {
