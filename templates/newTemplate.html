@@ -1,10 +1,61 @@
 <h1>Add new template</h1>
 
 <ul>
-
- 
+	<form name="infoForm" ng-hide="infoSubmitted" novalidate>
+		<input ng-model="template.TitleIS" placeholder="Icelandic title" class="form-control">
+		<input ng-model="template.TitleEN" placeholder="English title" class="form-control">
+		<input ng-model="template.IntroTextIS" placeholder="Icelandic intro text" class="form-control">
+		<input ng-model="template.IntroTextEN" placeholder="English intro text" class="form-control">
+		<button class="btn btn-mini" ng-click="submitTemplateInfo(template)">Save template info</button>
+	</form>
+	<div ng-hide="!infoSubmitted">
+		<h3>Template information</h3>
+		<p><b>Icelandic title:</b> {{ templateInfo.TitleIS }}</p>
+		<p><b>English title:</b> {{ templateInfo.TitleEN }}</p>
+		<p><b>Icelandic intro text:</b> {{ templateInfo.IntroTextIS }}</p>
+		<p><b>English intro text:</b> {{ templateInfo.IntroTextEN }}</p>
+	</div>
+	<h3>Course questions</h3> 	
+	<p ng-hide="!noCourseQuestions">You have not added any course questions to this template</p>
 	<li ng-repeat="courseQuestion in courseQuestions">
-		{{ courseQuestion.TextIS }}
+		<h4>Question number: {{ courseQuestion.ID }} </h4>
+		<p><b>TextIS:</b> {{ courseQuestion.TextIS }} </p>
+		<p><b>TextEN:</b> {{ courseQuestion.TextEN }} </p>
+		<p><b>ImageURL:</b> {{ courseQuestion.ImageURL }} </p>
+		<p><b>Type:</b> {{ courseQuestion.Type }} </p>
 	</li>
-	<button class="btn btn-mini" ng-click="addCourseQuestion()">Add new course question</button> 
+	<div ng-hide="hideQuestionForm">
+		<form name="questionForm" novalidate>
+			<h3>New Question: </h3>
+			<input ng-model="question.TextIS" placeholder="TitleIS" class="form-control">
+			<input ng-model="question.TextEN" placeholder="TitleEN" class="form-control">
+			<input ng-model="question.ImageURL" placeholder="ImageURL" class="form-control">
+			<input ng-model="question.Type" placeholder="Type" class="form-control">
+			<button class="btn btn-mini" ng-click="submitQuestion(question)">Add course question</button>
+		</form>
+	</div>
+
+	<h3>Teacher questions</h3>
+	<p ng-hide="!noTeacherQuestions">You have not added any teacher questions to this template</p>
+	<li ng-repeat="teacherQuestion in teacherQuestions">
+		<h4>Question number: {{ teacherQuestion.ID }} </h4>
+		TextIS: {{ teacherQuestion.TextIS }} </br>
+		TextEN: {{ teacherQuestion.TextEN }} </br>
+		ImageURL: {{ teacherQuestion.ImageURL }} </br>
+		Type: {{ teacherQuestion.Type }} </br>
+	</li>
+
+	<div ng-hide="hideTeacherQuestionForm">
+		<form name="teacherQuestionForm" novalidate>
+			<input ng-model="teacherQuestion.TextIS" placeholder="TitleIS" class="form-control">
+			<input ng-model="teacherQuestion.TextEN" placeholder="TitleEN" class="form-control">
+			<input ng-model="teacherQuestion.ImageURL" placeholder="ImageURL" class="form-control">
+			<input ng-model="teacherQuestion.Type" placeholder="Type" class="form-control">
+			<button class="btn btn-mini" ng-click="submitTeacherQuestion(teacherQuestion)">Add teacher question</button>
+		</form>
+	</div>
+	<button ng-hide="!hideQuestionForm" class="btn btn-mini" ng-click="displayQuestionForm()">Add course question</button> 
+	<button ng-hide="!hideTeacherQuestionForm" class="btn btn-mini" ng-click="displayTeacherQuestionForm()">Add teacher question</button> </br>
+	<button name="submitButton" ng-hide="!infoSubmitted" class="btn btn-mini" ng-click="submitTemplate()">Submit template</button>
+	<p ng-hide="hideError">Template information must be entered before submitting!</p>
 </ul>

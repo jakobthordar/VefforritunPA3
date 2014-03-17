@@ -48,8 +48,8 @@ app.factory("ApiFactory", [
 				});
 				return promise; 
 			},
-			newTemplate: function(id, titleIS, titleEN, introTextIS, introTextEN, courseQuestions) { 
-				var promise = $http.post(serviceUrl + "api/v1/evaluationtemplates", {"ID": id, "TitleIS": titleIS, "TitleEN": titleEN, "IntroTextIS": introTextIS, "IntroTextEN": introTextEN, "CourseQuestions": courseQuestions}).then(function(response){
+			newTemplate: function(templateObject) { 
+				var promise = $http.post(serviceUrl + "api/v1/evaluationtemplates", templateObject).then(function(response){
                         return response.data;
                     }); 
 				return promise; 
