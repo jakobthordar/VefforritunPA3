@@ -29,6 +29,23 @@ describe('Testing the ApiFactory, it', function(){
         "Status": "sample string 3"
       }
     ];
+    var templatesMock = [
+      {
+        "ID": 1,
+        "TitleIS": "sample string 2",
+        "TitleEN": "sample string 3"
+      },
+      {
+        "ID": 2,
+        "TitleIS": "sample string 4",
+        "TitleEN": "sample string 5"
+      },
+      {
+        "ID": 3,
+        "TitleIS": "sample string 6",
+        "TitleEN": "sample string 7"
+      }
+    ];
 
     beforeEach(function (){
         module('EvaluationApp');
@@ -129,6 +146,27 @@ describe('Testing the ApiFactory, it', function(){
             console.log("data: " + data);
         });
         httpMock.expectPOST(serviceUrl + "api/v1/evaluationtemplates").respond(200); 
+        httpMock.flush();
+    });
+
+    it('should be able to get all templates', function() {
+        httpMock.when('GET', serviceUrl + "api/v1/evaluationtemplates").respond(templatesMock);
+        ApiFactory.getAllTemplates().then(function(data) {
+            expect(data).toBeDefined(); 
+            expect(data.length).toBe(3);
+            expect(data[1].ID).toBe(2);
+        });
+        httpMock.expectGET(serviceUrl + "api/v1/evaluationtemplates")
+        httpMock.flush();
+    }); 
+
+    it('should be able to get a template by its ID', function() {
+        httpMock.when('GET', + serviceUrl + "api/v1/evaluationtemplates/1").respond(templatesMock[0]);
+        ApiFactory.getTemplateById(1).then(function(data) {
+            expect(data).toBeDefined(); 
+            expect(data.ID).toBe(1); 
+        });
+        httpMock.expectGET(serviceUrl + "api/v1/evaluationtemplates/1").respond(templatesMock[0]); 
         httpMock.flush();
     });
 });

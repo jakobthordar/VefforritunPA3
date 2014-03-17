@@ -56,7 +56,7 @@ app.controller("TemplateController", [
 			$scope.infoSubmitted = true; 
 		});
 		$scope.submitTemplate = ( function() {
-			if ($scope.infoSubmitted) {
+			if ($scope.infoSubmitted && ($scope.courseQuestions + $scope.teacherQuestions > 0)) {
 				var submitData = {
 					ID: 42, //this don't matter
 					TitleIS: $scope.templateInfo.TitleIS, 

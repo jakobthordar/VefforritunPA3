@@ -54,6 +54,18 @@ app.factory("ApiFactory", [
                     }); 
 				return promise; 
 			},
+			getAllTemplates: function() {
+				var promise = $http.get(serviceUrl + "api/v1/evaluationtemplates").then(function(response) {
+					return response.data; 
+				});
+				return promise;
+			},
+			getTemplateById: function(templateId) {
+				var promise = $http.get(serviceUrl + "api/v1/evaluationtemplates/" + templateId).then(function(response) {
+					return response.data; 
+				});
+				return promise; 
+			},
 			getUser: function() {
 				return user; 
 			},

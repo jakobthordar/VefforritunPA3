@@ -148,5 +148,13 @@ describe('Testing the template controller, it', function () {
         rootScope.infoSubmitted = false; 
         rootScope.submitTemplate(); 
         expect(rootScope.hideError).toBe(false);
+        rootScope.hideError = true; 
+        rootScope.infoSubmitted = true; 
+        rootScope.submitTemplate(); 
+        expect(rootScope.hideError).toBe(false);
+        rootScope.hideError = true; 
+        rootScope.teacherQuestions.push(1); 
+        rootScope.submitTemplate(); 
+        expect(rootScope.hideError).toBe(true); 
     });
 });
