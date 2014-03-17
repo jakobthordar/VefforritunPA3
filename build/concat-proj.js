@@ -184,8 +184,12 @@ app.controller("TemplateController", [
 	function($scope, ApiFactory, $routeParams, $location) {
 
         $scope.init = function(evaluationID) {
-            
+			$scope.courseQuestions = []; 
+			$scope.teacherQuestions = []; 
         };
+        $scope.addCourseQuestion = (function () {
+			console.log("testing");
+		});
 
         //$scope.init(evalID);	
 	}

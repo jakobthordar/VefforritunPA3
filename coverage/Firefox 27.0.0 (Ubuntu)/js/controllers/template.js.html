@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>Code coverage report for js/controllers/home.js</title>
+    <title>Code coverage report for js/controllers/template.js</title>
     <meta charset="utf-8">
 
     <link rel="stylesheet" href="../../prettify.css">
@@ -179,23 +179,23 @@
     </style>
 </head>
 <body>
-<div class="header low">
-    <h1>Code coverage report for <span class="entity">js/controllers/home.js</span></h1>
+<div class="header high">
+    <h1>Code coverage report for <span class="entity">js/controllers/template.js</span></h1>
     <h2>
         
-        Statements: <span class="metric">35.71% <small>(5 / 14)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Statements: <span class="metric">100% <small>(8 / 8)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
         
-        Branches: <span class="metric">0% <small>(0 / 2)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">100% <small>(0 / 0)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
         
-        Functions: <span class="metric">14.29% <small>(1 / 7)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">100% <small>(3 / 3)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
         
-        Lines: <span class="metric">35.71% <small>(5 / 14)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">100% <small>(8 / 8)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
     </h2>
-    <div class="path"><a href="../../index.html">All files</a> &#187; <a href="index.html">js/controllers/</a> &#187; home.js</div>
+    <div class="path"><a href="../../index.html">All files</a> &#187; <a href="index.html">js/controllers/</a> &#187; template.js</div>
 </div>
 <div class="body">
 <pre><table class="coverage">
@@ -222,74 +222,50 @@
 21
 22
 23
-24
-25
-26
-27
-28
-29
-30
-31
-32</td><td class="line-coverage"><span class="cline-any cline-yes">1</span>
+24</td><td class="line-coverage"><span class="cline-any cline-yes">1</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-yes">3</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-yes">2</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">app.controller("HomeController", [
-	"$scope", "ApiFactory", "$location",
-	function($scope, ApiFactory, $location) {
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">app.controller("TemplateController", [
+	"$scope", "ApiFactory", "$routeParams", "$location", 
+	function($scope, ApiFactory, $routeParams, $location) {
 &nbsp;
-		$scope.showButton = (<span class="fstat-no" title="function not covered" >function () {</span>
-<span class="cstat-no" title="statement not covered" >			if (ApiFactory.getUser().Role == "admin") {</span>
-<span class="cstat-no" title="statement not covered" >				return true; </span>
-			}
-			else {
-<span class="cstat-no" title="statement not covered" >				return false; </span>
-			}
+        $scope.init = function() {
+			$scope.courseQuestions = []; 
+			$scope.teacherQuestions = []; 
+        };
+        $scope.addCourseQuestion = (function () {
+        	var newQuestion = {
+        		ID: $scope.courseQuestions.length, 
+        		TextIS: "Spurning " + $scope.courseQuestions.length,
+        		TextEN: "Question " + $scope.courseQuestions.length, 
+        		ImageUrl: "Image URL", 
+        		Type: "Question type", 
+        		Answers: []
+        	}
+        	$scope.courseQuestions.push(newQuestion); 
 		});
 &nbsp;
-		$scope.newEvaluation = (<span class="fstat-no" title="function not covered" >function () {</span>
-<span class="cstat-no" title="statement not covered" >			$location.path("/evaluation/new");</span>
-		}); 
-&nbsp;
-		$scope.newTemplate = (<span class="fstat-no" title="function not covered" >function () {</span>
-<span class="cstat-no" title="statement not covered" >			$location.path("/template/new"); </span>
-		});
-&nbsp;
-		ApiFactory.getAllEvaluations().then(<span class="fstat-no" title="function not covered" >function(data) {</span>
-<span class="cstat-no" title="statement not covered" >			console.log("Success, data: ", data);</span>
-<span class="cstat-no" title="statement not covered" >			$scope.evaluations = data;</span>
-		}, <span class="fstat-no" title="function not covered" >function(errorMessage) {</span>
-<span class="cstat-no" title="statement not covered" >			console.log("Error: " + errorMessage);</span>
-		}, <span class="fstat-no" title="function not covered" >function(updateMessage) {</span>
-<span class="cstat-no" title="statement not covered" >			console.log("Update: " + updateMessage);</span>
-		});
+        $scope.init();	
 	}
 ]);
 &nbsp;</pre></td></tr>
