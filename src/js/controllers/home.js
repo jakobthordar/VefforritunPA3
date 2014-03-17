@@ -18,6 +18,10 @@ app.controller("HomeController", [
 			$location.path("/evaluation/new");
 		}); 
 
+		$scope.newTemplate = (function () {
+			$location.path("/template/new"); 
+		});
+
 		ApiFactory.getAllEvaluations().then(function(data) {
 			console.log("Success, data: ", data);
 			$scope.evaluations = data;

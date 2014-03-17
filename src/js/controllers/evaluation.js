@@ -6,10 +6,10 @@ app.controller("EvaluationController", [
 		//console.log($location.url()); 
 
 		if ($location.url() == "/evaluation/new") {
-
+			console.log("in new evaluation"); 
 		}
 		if ($location.url() == "/evaluation/") {
-			
+			console.log("in evaluation");
 		}
 
         $scope.init = function(evaluationID) {
@@ -48,5 +48,7 @@ app.controller("EvaluationController", [
 				Answers: []
 			});
 		};
+
+		
 	}
 ]);
