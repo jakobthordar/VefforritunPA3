@@ -1,8 +1,9 @@
 app.controller("EvaluationController", [
 	"$scope", "ApiFactory", "$routeParams", "$location", 
 	function($scope, ApiFactory, $routeParams, $location) {
+		var evalID = $routeParams.evaluationID;
 		
-		console.log($location.url()); 
+		//console.log($location.url()); 
 
 		if ($location.url() == "/evaluation/new") {
 
@@ -10,7 +11,6 @@ app.controller("EvaluationController", [
 		if ($location.url() == "/evaluation/") {
 			
 		}
-		var evaluationID = $routeParams.evaluationID;
 
         $scope.init = function(evaluationID) {
             if(evaluationID !== undefined) {

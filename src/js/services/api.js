@@ -9,85 +9,45 @@ app.factory("ApiFactory", [
 
 		return {
 			getAllEvaluations: function() {
-				var deferred = $q.defer();
-
-				var data = $http.get(serviceUrl + "api/v1/evaluations").
-				success(function (data, status, headers, config) {
-                    deferred.resolve(data); 
-				}).
-				error(function(data, status, headers, config) {
-					deferred.reject("Failed to get evaluations."); 
-				}); 
-			
-				return deferred.promise;
+				var promise = $http.get(serviceUrl + "api/v1/evaluations").then(function(response) {
+                    return response.data;
+                });
+				return promise;
 			},
 			getEvaluationById: function(id) {
-				var deferred = $q.defer();
+				var promise = $http.get(serviceUrl + "api/v1/evaluations/" + id).then(function(response) {
+                    return response.data;
+                });
 
-				var data = $http.get(serviceUrl + "api/v1/evaluations/" + id).
-				success(function (data, status, headers, config) {
-					deferred.resolve(data); 
-				}).
-				error(function (data, status, headers, config) {
-					deferred.reject("Failed to get ID " + id); 
-				}); 
-
-				return deferred.promise;
+				return promise;
 			},
 			addEvaluation: function(evaluation) {
-				var deferred = $q.defer();
+				var promise = $http.post(serviceUrl + "api/v1/evaluations", evaluation).then(function(response) {
+                    return response.data;
+                });
 
-				var data = $http.post(serviceUrl + "api/v1/evaluations", evaluation).
-				success(function (data, status, headers, config) {
-					deferred.resolve(data); 
-				}).
-				error(function (data, status, headers, config) {
-					deferred.reject("Failed to add evaluation"); 
-				}); 
-
-				return deferred.promise;
+				return promise;
 			},
 			login: function(username, password) {
-				var deferred = $q.defer(); 
-
-				var data = $http.post(serviceUrl + "api/v1/login", {"user": username, "pass": password}).
-				success(function (data, status, headers, config) { 
-					$http.defaults.headers.common.Authorization = 'Basic ' + data.Token; 
-					user = data.User; 
-					token = data.Token; 
-					deferred.resolve(data);
-				}).
-				error(function (data, status, headers, config) {
-					deferred.reject("Failed to log in.");
+				var promise = $http.post(serviceUrl + "api/v1/login", {"user": username, "pass": password}).then(function(response) { 
+					$http.defaults.headers.common.Authorization = 'Basic ' + response.Token; 
+					user = response.data.User; 
+					token = response.data.Token; 
+                    return response.data;
 				});
-				return deferred.promise; 
+				return promise; 
 			},
 			newEvaluation: function(templateId, startDate, endDate) {
-				var deferred = $q.defer(); 
-
-				var data = $http.post(serviceUrl + "api/v1/evaluations", {"TemplateID": templateId, "StartDate": startDate, "EndDate": endDate}).
-				success(function (data, status, headers, config) {
-					deferred.resolve(data); 
-				}).
-				error(function (data, status, headers, config) {
-					deferred.reject("Failed to submit evaluation"); 
-				}); 
-
-				return deferred.promise; 
+				var promise = $http.post(serviceUrl + "api/v1/evaluations", {"TemplateID": templateId, "StartDate": startDate, "EndDate": endDate}).then(function(response) {
+                    return response.data;
+				});
+				return promise; 
 			},
 			newTemplate: function(id, titleIS, titleEN, introTextIS, introTextEN, courseQuestions) { 
-				var deferred = $q.defer();
-
-				var data = $http.post(serviceUrl + "api/v1/evaluationtemplates", 
-					{"ID": id, "TitleIS": titleIS, "TitleEN": titleEN, "IntroTextIS": introTextIS, "IntroTextEN": introTextEN, "CourseQuestions": courseQuestions}).
-				success(function (data, status, headers, config) {
-					deferred.resolve(data); 
-				}).
-				error(function (data, status, headers, config) {
-					deferred.reject("Failed to submit new template"); 
-				}); 
-
-				return deferred.promise; 
+				var promise = $http.post(serviceUrl + "api/v1/evaluationtemplates", {"ID": id, "TitleIS": titleIS, "TitleEN": titleEN, "IntroTextIS": introTextIS, "IntroTextEN": introTextEN, "CourseQuestions": courseQuestions}).then(function(response){
+                        return response.data;
+                    }); 
+				return promise; 
 			},
 			getUser: function() {
 				return user; 
