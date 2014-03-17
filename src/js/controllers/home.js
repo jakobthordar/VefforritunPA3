@@ -4,12 +4,12 @@ app.controller("HomeController", [
 
         $scope.evaluations = [];
 		$scope.showButton = (function () {
-			if (ApiFactory.getUser().Role == "admin") {
-				return true; 
+            var user = ApiFactory.getUser();
+            var isAdmin = false;
+			if (user.Role === "admin") {
+                isAdmin = true;
 			}
-			else {
-				return false; 
-			}
+            return isAdmin;
 		});
 
         $scope.editEvaluation = (function() {
