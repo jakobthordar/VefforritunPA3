@@ -22,12 +22,10 @@ describe('Testing the template controller, it', function () {
         module('EvaluationApp');
         inject(function(_$rootScope_, _$controller_, _$q_) {
             ApiFactory = {
-                getEvaluationById: function(evaluationID){
-                    deferred = _$q_.defer();
-                    return deferred.promise;
-                },
+                newTemplate: function(templateObject) {
+
+                }
             };
-            spyOn(ApiFactory, 'getEvaluationById').andCallThrough();
             rootScope = _$rootScope_.$new();
 
             ctrl = _$controller_('TemplateController', {
@@ -54,6 +52,7 @@ describe('Testing the template controller, it', function () {
         expect(angular.isDefined(rootScope.noTeacherQuestions));
         expect(angular.isDefined(rootScope.noCourseQuestions));
         expect(angular.isDefined(rootScope.hideInfoForm));
+        expect(angular.isDefined(rootScope.hideError));
     }); 
 
     it('should be able to accept a submitted question', function() {
@@ -119,6 +118,32 @@ describe('Testing the template controller, it', function () {
         };
         rootScope.submitTemplateInfo(templateInfo); 
         expect(rootScope.templateInfo.TitleIS).toBe("Titill");
-        expect(rootScope.hideInfoForm).toBe(true);
+        expect(rootScope.infoSubmitted).toBe(true);
     }); 
+
+    it('should display its question form', function() {
+        expect(rootScope.hideQuestionForm).toBe(true); 
+        rootScope.displayQuestionForm(); 
+        expect(rootScope.hideQuestionForm).toBe(false); 
+    });
+
+    it('should display its teacher question form', function() {
+        expect(rootScope.hideTeacherQuestionForm).toBe(true); 
+        rootScope.displayTeacherQuestionForm();
+        expect(rootScope.hideTeacherQuestionForm).toBe(false);
+    });
+
+    it('should submit its new template to the API', function() {
+        rootScope.infoSubmitted = true;
+        expect(angular.isDefined(rootScope.submitButton));
+        rootScope.templateInfo = {
+            TitleIS: "herp", 
+            TitleEN: "derp", 
+            IntroTextIS: "lerp", 
+            IntroTextEN: "serp", 
+        };
+        rootScope.courseQuestions = []; 
+        rootScope.teacherQuestions = []; 
+        rootScope.submitTemplate(); 
+    });
 });

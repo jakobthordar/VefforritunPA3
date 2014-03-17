@@ -1,14 +1,14 @@
 <h1>Add new template</h1>
 
 <ul>
-	<form name="infoForm" ng-hide="hideInfoForm" novalidate>
+	<form name="infoForm" ng-hide="infoSubmitted" novalidate>
 		<input ng-model="template.TitleIS" placeholder="Icelandic title" class="form-control">
 		<input ng-model="template.TitleEN" placeholder="English title" class="form-control">
 		<input ng-model="template.IntroTextIS" placeholder="Icelandic intro text" class="form-control">
 		<input ng-model="template.IntroTextEN" placeholder="English intro text" class="form-control">
 		<button class="btn btn-mini" ng-click="submitTemplateInfo(template)">Save template info</button>
 	</form>
-	<div ng-hide="!hideInfoForm">
+	<div ng-hide="!infoSubmitted">
 		<h3>Template information</h3>
 		<p><b>Icelandic title:</b> {{ templateInfo.TitleIS }}</p>
 		<p><b>English title:</b> {{ templateInfo.TitleEN }}</p>
@@ -55,5 +55,7 @@
 		</form>
 	</div>
 	<button ng-hide="!hideQuestionForm" class="btn btn-mini" ng-click="displayQuestionForm()">Add course question</button> 
-	<button ng-hide="!hideTeacherQuestionForm" class="btn btn-mini" ng-click="displayTeacherQuestionForm()">Add teacher question</button>
+	<button ng-hide="!hideTeacherQuestionForm" class="btn btn-mini" ng-click="displayTeacherQuestionForm()">Add teacher question</button> </br>
+	<button name="submitButton" ng-hide="!infoSubmitted" class="btn btn-mini" ng-click="submitTemplate()">Submit template</button>
+	<p ng-hide="hideError">Template information must be entered before submitting!</p>
 </ul>

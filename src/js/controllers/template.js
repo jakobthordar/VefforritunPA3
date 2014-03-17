@@ -6,11 +6,12 @@ app.controller("TemplateController", [
 			$scope.templateInfo = {}; 
 			$scope.courseQuestions = []; 
 			$scope.teacherQuestions = []; 
-			$scope.hideInfoForm = false; 
+			$scope.infoSubmitted = false; 
 			$scope.hideQuestionForm = true; 
 			$scope.hideTeacherQuestionForm = true; 
 			$scope.noTeacherQuestions = true; 
 			$scope.noCourseQuestions = true; 
+			$scope.hideError = true; 
 		};
 		$scope.submitQuestion = ( function(question) {
 			$scope.courseQuestions.push( {
@@ -52,10 +53,24 @@ app.controller("TemplateController", [
 		});
 		$scope.submitTemplateInfo = ( function(templateInfo) {
 			$scope.templateInfo = templateInfo;
-			$scope.hideInfoForm = true; 
+			$scope.infoSubmitted = true; 
 		});
 		$scope.submitTemplate = ( function() {
-
+			if ($scope.infoSubmitted) {
+				var submitData = {
+					ID: 42, //this don't matter
+					TitleIS: $scope.templateInfo.TitleIS, 
+					TitleEN: $scope.templateInfo.TitleEN, 
+					IntroTextIS: $scope.templateInfo.IntroTextIS,
+					IntroTextEN: $scope.templateInfo.IntroTextEN, 
+					CourseQuestions: $scope.courseQuestions, 
+					TeacherQuestions: $scope.teacherQuestions
+				};
+				ApiFactory.newTemplate(submitData);
+			} 
+			else {
+				$scope.hideError = false; 
+			}
 		});
 		$scope.init();	
 	}

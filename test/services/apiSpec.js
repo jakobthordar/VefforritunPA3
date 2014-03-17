@@ -102,4 +102,14 @@ describe('Testing the ApiFactory, it', function(){
         httpMock.expectGET(serviceUrl + 'api/v1/evaluations').respond(evaluationsMock);
         httpMock.flush(); 
     });
+
+    it('should be able to submit a template', function() { 
+        httpMock.when('POST', serviceUrl + "api/v1/evaluationtemplates").respond(200); 
+        ApiFactory.newTemplate({}).then(function(data) {
+            expect(data).toBeDefined; 
+            console.log("data: " + data);
+        });
+        httpMock.expectPOST(serviceUrl + "api/v1/evaluationtemplates").respond(200); 
+        httpMock.flush();
+    });
 });
