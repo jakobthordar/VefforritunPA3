@@ -179,20 +179,20 @@
     </style>
 </head>
 <body>
-<div class="header high">
+<div class="header low">
     <h1>Code coverage report for <span class="entity">js/controllers/login.js</span></h1>
     <h2>
         
-        Statements: <span class="metric">100% <small>(12 / 12)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Statements: <span class="metric">10% <small>(1 / 10)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
         
         Branches: <span class="metric">100% <small>(0 / 0)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
         
-        Functions: <span class="metric">100% <small>(4 / 4)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">0% <small>(0 / 4)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
         
-        Lines: <span class="metric">100% <small>(12 / 12)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">10% <small>(1 / 10)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
     </h2>
     <div class="path"><a href="../../index.html">All files</a> &#187; <a href="index.html">js/controllers/</a> &#187; login.js</div>
@@ -229,50 +229,50 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4</span>
-<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4</span>
-<span class="cline-any cline-yes">2</span>
-<span class="cline-any cline-yes">1</span>
-<span class="cline-any cline-yes">1</span>
-<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1</span>
-<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">app.controller("LoginController", [
     "$scope", "ApiFactory", "$location",
-    function($scope, ApiFactory, $location) {
+<span class="fstat-no" title="function not covered" >    function($scope, ApiFactory, $location) {</span>
         //This is currently not in use
-        $scope.loginCred = {
+<span class="cstat-no" title="statement not covered" >        $scope.loginCred = {</span>
             userName: "",
 password: ""
         };
-        $scope.token = "";
-        $scope.user = "";
+<span class="cstat-no" title="statement not covered" >        $scope.token = "";</span>
+<span class="cstat-no" title="statement not covered" >        $scope.user = "";</span>
 &nbsp;
-        $scope.login = function(login) {
-            ApiFactory.login(login.user, login.pass).then(function(data) {
-                $scope.user = data.User; 
-                $scope.token = data.Token; 
-                console.log("THE TOKEN: " + ApiFactory.getToken());
+<span class="cstat-no" title="statement not covered" >        $scope.login = <span class="fstat-no" title="function not covered" >function(login) {</span></span>
+<span class="cstat-no" title="statement not covered" >            ApiFactory.login(login.user, login.pass).then(<span class="fstat-no" title="function not covered" >function(data) {</span></span>
+<span class="cstat-no" title="statement not covered" >                $scope.user = data.User; </span>
+<span class="cstat-no" title="statement not covered" >                $scope.token = data.Token; </span>
+                //console.log("THE TOKEN: " + ApiFactory.getToken());
                 //Role is currently undefined as per tests
                 //console.log("Logged in as " + ApiFactory.getUser().Role); 
-                $location.path("/home/");
-            }, function(errorMessage) {
-                console.log("Could not log in."); 
-                $scope.errorMessage = "Could not log in.";
+<span class="cstat-no" title="statement not covered" >                $location.path("/home/");</span>
+            }, <span class="fstat-no" title="function not covered" >function(errorMessage) {</span>
+                //console.log("Could not log in."); 
+<span class="cstat-no" title="statement not covered" >                $scope.errorMessage = "Could not log in.";</span>
             });
         };
     }
@@ -282,7 +282,7 @@ password: ""
 
 </div>
 <div class="footer">
-    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Mar 17 2014 21:26:32 GMT+0000 (GMT)</div>
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Tue Mar 18 2014 00:15:56 GMT+0000 (GMT)</div>
 </div>
 
 <script src="../../prettify.js"></script>
