@@ -1,5 +1,5 @@
 //Create the module 
-var app = angular.module("EvaluationApp", ["ngRoute"]);
+var app = angular.module("EvaluationApp", ["ui.bootstrap","ngRoute"]);
 
 //This defines the routing throughout the app 
 app.config(function($routeProvider, $provide, $httpProvider) {
@@ -33,14 +33,9 @@ app.controller("EvaluationController", [
 	function($scope, ApiFactory, $routeParams, $location) {
 		var evalID = $routeParams.evaluationID;
 		
+		$scope.templates = []; 
+		//$scope.template = ""; 
 		//console.log($location.url()); 
-
-		if ($location.url() == "/evaluation/new") {
-			console.log("in new evaluation"); 
-		}
-		if ($location.url() == "/evaluation/") {
-			console.log("in evaluation");
-		}
 
         $scope.init = function(evaluationID) {
             if(evaluationID !== undefined) {
@@ -61,6 +56,19 @@ app.controller("EvaluationController", [
                     TeacherQuestions: []
                 };
             }
+
+            if ($location.url() == "/evaluation/new") {
+				console.log("in new evaluation"); 
+				ApiFactory.getAllTemplates().then(function(data) {
+					$scope.templates = data; 
+					$scope.template = data[0];
+					$scope.startIsCollapsed = true; 
+					$scope.endIsCollapsed = true;
+				});
+			}
+			if ($location.url() == "/evaluation/") {
+				console.log("in evaluation");
+			}
         };
         $scope.init(evalID);
 
@@ -79,7 +87,8 @@ app.controller("EvaluationController", [
 			});
 		};
 
-		
+		$scope.startTimeChanged = function(date) {
+		};
 	}
 ]);
 
@@ -89,12 +98,12 @@ app.controller("HomeController", [
 
         $scope.evaluations = [];
 		$scope.showButton = (function () {
-			if (ApiFactory.getUser().Role == "admin") {
-				return true; 
+            var user = ApiFactory.getUser();
+            var isAdmin = false;
+			if (user.Role === "admin") {
+                isAdmin = true;
 			}
-			else {
-				return false; 
-			}
+            return isAdmin;
 		});
 
         $scope.editEvaluation = (function() {
@@ -102,16 +111,16 @@ app.controller("HomeController", [
         });
 
 		$scope.newEval = (function(evaluation) {
-            var dummyEval = {
-                "TemplateID": 1,
+            /*ar dummyEval = {
+                "TemplateID": 0,
                 "StartDate": "2014-03-17T15:28:40.2360731+00:00",
                 "EndDate": "2014-03-17T15:28:40.2360731+00:00"
             };
             ApiFactory.addEvaluation(dummyEval).then(function(data) 
             {
                 $scope.getAllEvals();
-            });
-			//$location.path("/evaluation/new");
+            });*/
+			$location.path("/evaluation/new");
 		}); 
 
 		$scope.newTemplate = (function () {
@@ -217,7 +226,7 @@ app.controller("TemplateController", [
 			$scope.infoSubmitted = true; 
 		});
 		$scope.submitTemplate = ( function() {
-			if ($scope.infoSubmitted) {
+			if ($scope.infoSubmitted && ($scope.courseQuestions.length + $scope.teacherQuestions.length > 0)) {
 				var submitData = {
 					ID: 42, //this don't matter
 					TitleIS: $scope.templateInfo.TitleIS, 
@@ -275,14 +284,14 @@ app.factory("ApiFactory", [
 		var token = ""; 
 
 		return {
-			getAllEvaluations: function() {
+            getAllEvaluations: function() {
 				var promise = $http.get(serviceUrl + "api/v1/evaluations").then(function(response) {
                     //console.log("Response from getAllEvaluations: " + response.data);
                     return response.data;
                 });
 				return promise;
 			},
-			getEvaluationById: function(id) {
+            getEvaluationById: function(id) {
 				var promise = $http.get(serviceUrl + "api/v1/evaluations/" + id).then(function(response) {
                     //console.log(response);
                     return response.data;
@@ -290,7 +299,7 @@ app.factory("ApiFactory", [
 
 				return promise;
 			},
-			addEvaluation: function(evaluation) {
+            addEvaluation: function(evaluation) {
 				var promise = $http.post(serviceUrl + "api/v1/evaluations", evaluation).then(function(response) {
                     console.log("Response: " + response);
                     console.log("Response data: " + response.data);
@@ -300,7 +309,7 @@ app.factory("ApiFactory", [
 
 				return promise;
 			},
-			login: function(username, password) {
+            login: function(username, password) {
 				var promise = $http.post(serviceUrl + "api/v1/login", {"user": username, "pass": password}).then(function(response) { 
 					$http.defaults.headers.common.Authorization = 'Basic ' + response.data.Token; 
 					user = response.data.User; 
@@ -309,24 +318,67 @@ app.factory("ApiFactory", [
 				});
 				return promise; 
 			},
-			newEvaluation: function(templateId, startDate, endDate) {
+            newEvaluation: function(templateId, startDate, endDate) {
 				var promise = $http.post(serviceUrl + "api/v1/evaluations", {"TemplateID": templateId, "StartDate": startDate, "EndDate": endDate}).then(function(response) {
                     return response.data;
 				});
 				return promise; 
 			},
-			newTemplate: function(templateObject) { 
+            newTemplate: function(templateObject) { 
 				var promise = $http.post(serviceUrl + "api/v1/evaluationtemplates", templateObject).then(function(response){
                         return response.data;
                     }); 
 				return promise; 
 			},
-			getUser: function() {
+            getAllTemplates: function() {
+				var promise = $http.get(serviceUrl + "api/v1/evaluationtemplates").then(function(response) {
+					return response.data; 
+				});
+				return promise;
+			},
+            getTemplateById: function(templateId) {
+				var promise = $http.get(serviceUrl + "api/v1/evaluationtemplates/" + templateId).then(function(response) {
+					return response.data; 
+				});
+				return promise; 
+			},
+            getMyCourses: function() {
+				var promise = $http.get(serviceUrl + "api/v1/my/courses").then(function(response) {
+					return response.data; 
+				});
+				return promise; 
+            },
+            getMyEvaluations: function() {
+				var promise = $http.get(serviceUrl + "api/v1/my/evaluations").then(function(response) {
+					return response.data; 
+				});
+				return promise; 
+            },
+            getCourseTeacher: function(course, semester) {
+				var promise = $http.get(serviceUrl + "api/v1/courses/" + course + "/" + semester + "/teachers").then(function(response) {
+					return response.data; 
+				});
+				return promise; 
+            },
+            getCourseEvaluation: function(course, semester, evalID) {
+				var promise = $http.get(serviceUrl + "api/v1/courses/" + course + "/" + semester + "/evaluations/" + evalID).then(function(response) {
+					return response.data; 
+				});
+				return promise; 
+            },
+            saveAnswers: function(course, semester, evalID, answers) {
+				var promise = $http.post(serviceUrl + "api/v1/courses/" + course + "/" + semester + "/evaluations/" + evalID, answers).then(function(response) {
+					return response.data; 
+				});
+				return promise; 
+            },
+            getUser: function() {
 				return user; 
 			},
-			getToken: function() {
+            getToken: function() {
 				return token; 
 			}
+            
 		};
 	}
 ]);
