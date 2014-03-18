@@ -14,19 +14,16 @@
 		<input ng-model="date.startDay" placeholder="End day" class="form-control">
 	</form>
 	<button name="submitButton" class="btn btn-mini" ng-click="submitEvaluation()">Submit evaluation</button>-->
-	<button class="btn btn-default" ng-click="startIsCollapsed = !startIsCollapsed">Pick start time</button>
-	<hr>
-	<div collapse="startIsCollapsed">
-		<div ng-model="startTime" ng-change="startTimeChanged()" style="display:inline-block;">
-			<timepicker hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></timepicker>
-		</div>
+	<h3>Start time</h3>
+	<div ng-model="startTime" ng-change="startTimeChanged(startTime)" style="display:inline-block;">
+		<timepicker hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></timepicker>
 	</div>
 
-	<button class="btn btn-default" ng-click="endIsCollapsed = !endIsCollapsed">Pick end time</button>
-	<hr>
-		<div collapse="endIsCollapsed">
-		  	<div ng-model="endTime" ng-change="endTimeChanged()" style="display:inline-block;">
-		        <timepicker hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></timepicker>
-		  	</div>
-		</div>
+	<h3>End time</h3>
+  	<div ng-model="endTime" ng-change="endTimeChanged(endTime)" style="display:inline-block;">
+        <timepicker hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></timepicker>
+  	</div>
+
+	<button name="submitButton" class="btn btn-mini" ng-click="submitEvaluation()">Submit evaluation</button>
+
 </div>

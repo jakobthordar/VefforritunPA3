@@ -34,8 +34,9 @@ app.controller("EvaluationController", [
 		var evalID = $routeParams.evaluationID;
 		
 		$scope.templates = []; 
-		//$scope.template = ""; 
-		//console.log($location.url()); 
+		//Timepicker variables
+		$scope.hstep = 1; 
+		$scope.mstep = 15; 
 
         $scope.init = function(evaluationID) {
             if(evaluationID !== undefined) {
@@ -88,6 +89,7 @@ app.controller("EvaluationController", [
 		};
 
 		$scope.startTimeChanged = function(date) {
+			console.log("ping" + date);
 		};
 	}
 ]);
