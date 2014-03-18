@@ -3,6 +3,7 @@ app.controller("HomeController", [
 	function($scope, ApiFactory, $location) {
 
         $scope.evaluations = [];
+
 		$scope.showButton = (function () {
             var user = ApiFactory.getUser();
             var isAdmin = false;

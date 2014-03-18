@@ -1,0 +1,17 @@
+<h1>Evaluations</h1>
+<ul>
+	<li ng-repeat="evaluation in evaluations">
+<<<<<<< HEAD
+		<a class="btn btn-mini" ng-href="#/evaluation/{{ evaluation.ID }}">{{ evaluation.TemplateTitleIS }}</a>
+=======
+		<a ng-href="#/evaluation/{{ evaluation.ID }}">{{ evaluation.TemplateTitleIS }}</a>
+>>>>>>> 4fb2bf6cf7df414e8d98ad8eec831b2860125740
+	</li>
+
+	<button ng-show="showButton()" class="btn btn-mini" ng-click="newEval()">Add new evaluation</button>
+	<button ng-show="showButton()" class="btn btn-mini" ng-click="newTemplate()">Add new template</button>
+</ul>
+<div ng-controller="HomeController">
+    <button>hellothar</button>
+    <my-evals></myevals>
+</div>
