@@ -1,9 +1,8 @@
 <h1>Evaluations</h1>
 <ul>
 	<li ng-repeat="evaluation in evaluations">
-		<a class="btn btn-mini" ng-href="#/evaluation/{{ evaluation.ID }}">{{ evaluation.TemplateTitleIS }}</a>
+		<a ng-href="#/evaluation/{{ evaluation.ID }}">{{ evaluation.TemplateTitleIS }}</a>
 	</li>
-
 	<button ng-show="showButton()" class="btn btn-mini" ng-click="newEval()">Add new evaluation</button>
 	<button ng-show="showButton()" class="btn btn-mini" ng-click="newTemplate()">Add new template</button>
 </ul>

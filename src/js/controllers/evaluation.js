@@ -71,13 +71,13 @@ app.controller("EvaluationController", [
 
 		};
 
-		//Timepicker variables
+		/*//Timepicker variables
 		$scope.hstep = 1; 
 		$scope.mstep = 15; 
-		$scope.opened = false; 
+		$scope.opened = false; */
 		$scope.startTime = ""; 
 		$scope.endTime = ""; 
-		//Datepicker functions and variables 
+		/*//Datepicker functions and variables 
 		$scope.today = function() {
 			$scope.dt = new Date();
 		};
@@ -116,12 +116,12 @@ app.controller("EvaluationController", [
 
 		$scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'shortDate'];
 		$scope.format = $scope.formats[0];
-
+*/
 		$scope.submitEvaluation = function() {
-			if ($scope.startTime == "") {
+			if ($scope.startTime === "") {
 				$scope.startTime = new Date(); 
 			}
-			if ($scope.endTime == "") {
+			if ($scope.endTime === "") {
 				$scope.endTime = new Date();
 			}
 			ApiFactory.newEvaluation($scope.template.ID, $scope.startTime, $scope.endTime); 

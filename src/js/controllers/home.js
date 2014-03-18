@@ -79,5 +79,7 @@ app.controller("HomeController", [
                 $scope.status = "Error: " + errorMessage;
             });
         });
+
+        $scope.getAllEvals();
 	}
 ]);
