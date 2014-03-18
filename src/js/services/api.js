@@ -102,7 +102,6 @@ app.factory("ApiFactory", [
             getToken: function() {
 				return token; 
 			}
-            
 		};
 	}
 ]);
