@@ -3,15 +3,8 @@ app.controller("EvaluationController", [
 	function($scope, ApiFactory, $routeParams, $location) {
 		var evalID = $routeParams.evaluationID;
 		
-		//console.log($location.url()); 
-
-		if ($location.url() == "/evaluation/new") {
-			console.log("in new evaluation"); 
-		}
-		if ($location.url() == "/evaluation/") {
-			console.log("in evaluation");
-		}
-
+		$scope.templates = []; 
+		$scope.template = $scope.templates[0];
         $scope.init = function(evaluationID) {
             if(evaluationID !== undefined) {
                 ApiFactory.getEvaluationById(evaluationID).then(function(data) {
@@ -31,6 +24,19 @@ app.controller("EvaluationController", [
                     TeacherQuestions: []
                 };
             }
+
+            if ($location.url() == "/evaluation/new") {
+				console.log("in new evaluation"); 
+				ApiFactory.getAllTemplates().then(function(data) {
+					$scope.templates = data; 
+					$scope.template = data[0];
+					$scope.startIsCollapsed = true; 
+					$scope.endIsCollapsed = true;
+				});
+			}
+			if ($location.url() == "/evaluation/") {
+				console.log("in evaluation");
+			}
         };
         $scope.init(evalID);
 
@@ -49,6 +55,77 @@ app.controller("EvaluationController", [
 			});
 		};
 
-		
+		$scope.startTimeChanged = function(date) {
+			$scope.startTime = date;
+		};
+
+		$scope.endTimeChanged = function(date) {
+			$scope.endTime = date; 
+		}; 
+
+		$scope.startDateChanged = function(date) {
+
+		}; 
+
+		$scope.endDateChanged = function(date) {
+
+		};
+
+		//Timepicker variables
+		$scope.hstep = 1; 
+		$scope.mstep = 15; 
+		$scope.opened = false; 
+		$scope.startTime = ""; 
+		$scope.endTime = ""; 
+		//Datepicker functions and variables 
+		$scope.today = function() {
+			$scope.dt = new Date();
+		};
+		$scope.today();
+
+		$scope.showWeeks = true;
+		$scope.toggleWeeks = function () {
+			$scope.showWeeks = ! $scope.showWeeks;
+		};
+
+		$scope.clear = function () {
+			$scope.dt = null;
+		};
+
+		// Disable weekend selection
+		$scope.disabled = function(date, mode) {
+			return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
+		};
+
+		$scope.toggleMin = function() {
+			$scope.minDate = ( $scope.minDate ) ? null : new Date();
+		};
+		$scope.toggleMin();
+
+		$scope.open = function($event) {
+			$event.preventDefault();
+			$event.stopPropagation();
+
+			$scope.opened = true;
+		};
+
+		$scope.dateOptions = {
+			'year-format': "'yy'",
+			'starting-day': 1
+		};
+
+		$scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'shortDate'];
+		$scope.format = $scope.formats[0];
+
+		$scope.submitEvaluation = function() {
+			if ($scope.startTime == "") {
+				$scope.startTime = new Date(); 
+			}
+			if ($scope.endTime == "") {
+				$scope.endTime = new Date();
+			}
+			ApiFactory.newEvaluation($scope.template.ID, $scope.startTime, $scope.endTime); 
+		};
+
 	}
 ]);

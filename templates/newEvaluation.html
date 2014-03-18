@@ -1,0 +1,29 @@
+<div ng-controller="EvaluationController">
+
+	<h1>Add new evaluation</h1>
+
+	<p><b>Template: </b><select ng-model="template" ng-options="t.TitleIS for t in templates"></select></p>
+
+	<!--<form name="startForm" novalidate>
+		<input ng-model="date.startYear" placeholder="Start year" class="form-control">
+		<input ng-model="date.startMonth" placeholder="Start month" class="form-control">
+		<input ng-model="date.startDay" placeholder="Start day" class="form-control">
+		<button class="btn btn-mini" ng-click="setStartDateNow(date)">Now</button>
+		<input ng-model="date.startYear" placeholder="End year" class="form-control">
+		<input ng-model="date.startMonth" placeholder="End month" class="form-control">
+		<input ng-model="date.startDay" placeholder="End day" class="form-control">
+	</form>
+	<button name="submitButton" class="btn btn-mini" ng-click="submitEvaluation()">Submit evaluation</button>-->
+	<h3>Start time</h3>
+	<div ng-model="startTime" ng-change="startTimeChanged(startTime)" style="display:inline-block;">
+		<timepicker hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></timepicker>
+	</div>
+
+	<h3>End time</h3>
+  	<div ng-model="endTime" ng-change="endTimeChanged(endTime)" style="display:inline-block;">
+        <timepicker hour-step="hstep" minute-step="mstep" show-meridian="ismeridian"></timepicker>
+  	</div>
+
+	<button name="submitButton" class="btn btn-mini" ng-click="submitEvaluation()">Submit evaluation</button>
+
+</div>

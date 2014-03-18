@@ -56,7 +56,7 @@ app.controller("HomeController", [
         });
 
 		$scope.newEval = (function(evaluation) {
-            var dummyEval = {
+            /*ar dummyEval = {
                 "TemplateID": 0,
                 "StartDate": "2014-03-17T15:28:40.2360731+00:00",
                 "EndDate": "2014-03-17T15:28:40.2360731+00:00"
@@ -64,8 +64,8 @@ app.controller("HomeController", [
             ApiFactory.addEvaluation(dummyEval).then(function(data) 
             {
                 $scope.getAllEvals();
-            });
-			//$location.path("/evaluation/new");
+            });*/
+			$location.path("/evaluation/new");
 		}); 
 
 		$scope.newTemplate = (function () {
