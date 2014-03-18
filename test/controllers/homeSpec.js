@@ -49,6 +49,14 @@ describe("Testing the home controller, it", function() {
                     deferred = _$q_.defer();
                     return deferred.promise;
                 },
+                getMyEvaluations: function() {
+                    deferred = _$q_.defer();
+                    return deferred.promise;
+                },
+                getMyCourses: function() {
+                    deferred = _$q_.defer();
+                    return deferred.promise;
+                },
                 addEvaluation: function() {
                     deferred = _$q_.defer();
                     return deferred.promise;
@@ -62,6 +70,8 @@ describe("Testing the home controller, it", function() {
             };
             /* Spy on the service and call it */
             spyOn(ApiFactory, 'getAllEvaluations').andCallThrough();
+            spyOn(ApiFactory, 'getMyEvaluations').andCallThrough();
+            spyOn(ApiFactory, 'getMyCourses').andCallThrough();
             spyOn(ApiFactory, 'addEvaluation').andCallThrough();
             spyOn(ApiFactory, 'getUser').andCallThrough();
             rootScope = _$rootScope_.$new();
@@ -80,23 +90,30 @@ describe("Testing the home controller, it", function() {
         rootScope.$digest();
         expect(ApiFactory.getAllEvaluations).toHaveBeenCalled();
         expect(rootScope.evaluations).toEqual(evalListMock.evaluations);
-        expect(rootScope.status).toEqual("Success.");
+    });
+
+    it('should be able to get myCourses', function() {
+        rootScope.getMyCourses();
+
+        deferred.resolve('receivedData');
+        rootScope.$digest();
+        expect(ApiFactory.getMyCourses).toHaveBeenCalled();
+        expect(rootScope.courses).toEqual('receivedData');
+    });
+
+    it('should call scope function in init func', function() {
+        ctrl.init();
+
+        deferred.resolve('receivedData');
+        rootScope.$digest();
+        expect(ApiFactory.getAllEvaluations).toHaveBeenCalled();
+        expect(ApiFactory.getMyCourses).toHaveBeenCalled();
     });
 
     it('should only show an add new eval button for admins', function() {
         var foo = rootScope.showButton();
         expect(ApiFactory.getUser).toHaveBeenCalled();
         expect(foo).toBe(true);
-    });
-
-    it('should reject if get all evaluations fails', function() {
-        rootScope.getAllEvals();
-        var errorMsg = "could not get all evaluations";
-
-        deferred.reject(errorMsg);
-        rootScope.$digest();
-        expect(ApiFactory.getAllEvaluations).toHaveBeenCalled();
-        expect(rootScope.status).toEqual("Error: " + errorMsg);
     });
 
     it('should be able to add a new evaluation', function() {

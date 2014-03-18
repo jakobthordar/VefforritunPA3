@@ -3,6 +3,7 @@ app.controller("HomeController", [
 	function($scope, ApiFactory, $location) {
 
         $scope.evaluations = [];
+        $scope.courses = [];
 
 		$scope.showButton = (function () {
             var user = ApiFactory.getUser();
@@ -12,21 +13,11 @@ app.controller("HomeController", [
 			}
             return isAdmin;
 		});
-
         $scope.editEvaluation = (function() {
-
+            $location.path("/evaluation/edit");
         });
 
 		$scope.newEval = (function(evaluation) {
-            /*ar dummyEval = {
-                "TemplateID": 0,
-                "StartDate": "2014-03-17T15:28:40.2360731+00:00",
-                "EndDate": "2014-03-17T15:28:40.2360731+00:00"
-            };
-            ApiFactory.addEvaluation(dummyEval).then(function(data) 
-            {
-                $scope.getAllEvals();
-            });*/
 			$location.path("/evaluation/new");
 		}); 
 
@@ -35,17 +26,22 @@ app.controller("HomeController", [
 		});
 
         $scope.getAllEvals = (function() {
-            $scope.status = "Waiting...";
+            console.log("Evaluations");
             ApiFactory.getAllEvaluations().then(function(data) {
-                //console.log("Success, data: ", data);
                 $scope.evaluations = data;
-                $scope.status = "Success.";
-            }, function(errorMessage) {
-                //console.log("Error: " + errorMessage);
-                $scope.status = "Error: " + errorMessage;
             });
         });
+        $scope.getMyCourses = (function() {
+            console.log("Courses");
+            ApiFactory.getMyCourses().then(function(data) {
+                $scope.courses = data;
+            });
+        });
+        this.init = (function() {
+            $scope.getAllEvals();
+            $scope.getMyCourses();
+        });
+        this.init();
 
-        $scope.getAllEvals();
 	}
 ]);
