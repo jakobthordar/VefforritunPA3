@@ -8,14 +8,14 @@ app.factory("ApiFactory", [
 		var token = ""; 
 
 		return {
-			getAllEvaluations: function() {
+            getAllEvaluations: function() {
 				var promise = $http.get(serviceUrl + "api/v1/evaluations").then(function(response) {
                     //console.log("Response from getAllEvaluations: " + response.data);
                     return response.data;
                 });
 				return promise;
 			},
-			getEvaluationById: function(id) {
+            getEvaluationById: function(id) {
 				var promise = $http.get(serviceUrl + "api/v1/evaluations/" + id).then(function(response) {
                     //console.log(response);
                     return response.data;
@@ -23,7 +23,7 @@ app.factory("ApiFactory", [
 
 				return promise;
 			},
-			addEvaluation: function(evaluation) {
+            addEvaluation: function(evaluation) {
 				var promise = $http.post(serviceUrl + "api/v1/evaluations", evaluation).then(function(response) {
                     console.log("Response: " + response);
                     console.log("Response data: " + response.data);
@@ -33,7 +33,7 @@ app.factory("ApiFactory", [
 
 				return promise;
 			},
-			login: function(username, password) {
+            login: function(username, password) {
 				var promise = $http.post(serviceUrl + "api/v1/login", {"user": username, "pass": password}).then(function(response) { 
 					$http.defaults.headers.common.Authorization = 'Basic ' + response.data.Token; 
 					user = response.data.User; 
@@ -42,36 +42,67 @@ app.factory("ApiFactory", [
 				});
 				return promise; 
 			},
-			newEvaluation: function(templateId, startDate, endDate) {
+            newEvaluation: function(templateId, startDate, endDate) {
 				var promise = $http.post(serviceUrl + "api/v1/evaluations", {"TemplateID": templateId, "StartDate": startDate, "EndDate": endDate}).then(function(response) {
                     return response.data;
 				});
 				return promise; 
 			},
-			newTemplate: function(templateObject) { 
+            newTemplate: function(templateObject) { 
 				var promise = $http.post(serviceUrl + "api/v1/evaluationtemplates", templateObject).then(function(response){
                         return response.data;
                     }); 
 				return promise; 
 			},
-			getAllTemplates: function() {
+            getAllTemplates: function() {
 				var promise = $http.get(serviceUrl + "api/v1/evaluationtemplates").then(function(response) {
 					return response.data; 
 				});
 				return promise;
 			},
-			getTemplateById: function(templateId) {
+            getTemplateById: function(templateId) {
 				var promise = $http.get(serviceUrl + "api/v1/evaluationtemplates/" + templateId).then(function(response) {
 					return response.data; 
 				});
 				return promise; 
 			},
-			getUser: function() {
+            getMyCourses: function() {
+				var promise = $http.get(serviceUrl + "api/v1/my/courses").then(function(response) {
+					return response.data; 
+				});
+				return promise; 
+            },
+            getMyEvaluations: function() {
+				var promise = $http.get(serviceUrl + "api/v1/my/evaluations").then(function(response) {
+					return response.data; 
+				});
+				return promise; 
+            },
+            getCourseTeacher: function(course, semester) {
+				var promise = $http.get(serviceUrl + "api/v1/courses/" + course + "/" + semester + "/teachers").then(function(response) {
+					return response.data; 
+				});
+				return promise; 
+            },
+            getCourseEvaluation: function(course, semester, evalID) {
+				var promise = $http.get(serviceUrl + "api/v1/courses/" + course + "/" + semester + "/evaluations/" + evalID).then(function(response) {
+					return response.data; 
+				});
+				return promise; 
+            },
+            saveAnswers: function(course, semester, evalID, answers) {
+				var promise = $http.post(serviceUrl + "api/v1/courses/" + course + "/" + semester + "/evaluations/" + evalID, answers).then(function(response) {
+					return response.data; 
+				});
+				return promise; 
+            },
+            getUser: function() {
 				return user; 
 			},
-			getToken: function() {
+            getToken: function() {
 				return token; 
 			}
+            
 		};
 	}
 ]);
