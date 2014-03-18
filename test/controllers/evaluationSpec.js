@@ -26,10 +26,28 @@ describe('Testing the evaluation controller, it', function () {
                     deferred = _$q_.defer();
                     return deferred.promise;
                 },
+                getTemplateById: function(templateId) { 
+                    deferred = _$q_.defer(); 
+                    return deferred.promise;
+                },
                 newEvaluation: function(templateId, startTime, endTime) {
                     return 1; 
+                },
+                getAllTemplates: function() {
+                    var ret = [
+                        {
+                            ID:1
+                        },
+                        {
+                            ID:2
+                        },
+                        {
+                            ID:3
+                        }
+                    ];
                 }
             };
+
             spyOn(ApiFactory, 'getEvaluationById').andCallThrough();
             rootScope = _$rootScope_.$new();
 
@@ -37,6 +55,8 @@ describe('Testing the evaluation controller, it', function () {
                 $scope: rootScope,
                 ApiFactory: ApiFactory,
             });
+
+
         });
     });
 
@@ -98,8 +118,8 @@ describe('Testing the evaluation controller, it', function () {
         expect(rootScope.evaluation).toEqual(emptyEvalDataMock);
     });
 
-    it('should have all of the variables it needs for the calendar', function () {
-        /*expect(rootScope.hstep).toBeDefined(); 
+    /*it('should have all of the variables it needs for the calendar', function () {
+        expect(rootScope.hstep).toBeDefined(); 
         expect(rootScope.mstep).toBeDefined();
         expect(rootScope.dt).toBeDefined(); 
         expect(rootScope.showWeeks).toBeDefined(); 
@@ -108,16 +128,16 @@ describe('Testing the evaluation controller, it', function () {
         expect(rootScope.dateOptions).toBeDefined(); 
         expect(rootScope.formats).toBeDefined(); 
         expect(rootScope.format).toBeDefined(); 
-        expect(rootScope.format).toBe('dd-MMMM-yyyy'); */
+        expect(rootScope.format).toBe('dd-MMMM-yyyy'); 
 
-    });
+    });*/
 
-    it('should have all of the functions it needs for the calendar and time', function() {
-        /*expect(angular.isFunction(rootScope.startTimeChanged)).toBe(true); 
+    /*it('should have all of the functions it needs for the calendar and time', function() {
+        expect(angular.isFunction(rootScope.startTimeChanged)).toBe(true); 
         expect(angular.isFunction(rootScope.endTimeChanged)).toBe(true); 
         expect(angular.isFunction(rootScope.startDateChanged)).toBe(true); 
-        expect(angular.isFunction(rootScope.endDateChanged)).toBe(true);*/
-    });
+        expect(angular.isFunction(rootScope.endDateChanged)).toBe(true);
+    });*/
 
     it('should be able to submit a new evaluation', function() {
         rootScope.template = { ID: 1 }; 
@@ -130,4 +150,12 @@ describe('Testing the evaluation controller, it', function () {
         rootScope.endTime = Date(); 
         rootScope.submitEvaluation(); 
     }); 
+
+    it('should change the start and end dates when prompted to', function() {
+        rootScope.startTimeChanged(1); 
+        rootScope.endTimeChanged(1); 
+        expect(rootScope.startTime).toBe(1); 
+        expect(rootScope.endTime).toBe(1);
+    });
+
 });

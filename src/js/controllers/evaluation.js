@@ -2,13 +2,24 @@ app.controller("EvaluationController", [
 	"$scope", "ApiFactory", "$routeParams", "$location", 
 	function($scope, ApiFactory, $routeParams, $location) {
 		var evalID = $routeParams.evaluationID;
-		
-		$scope.templates = []; 
-		$scope.template = $scope.templates[0];
+		$scope.evaluationTemplate = {
+			ID: "",
+			TitleIS: "", 
+			TitleEN: "", 
+			IntroTextIS: "", 
+			IntroTextEN: "", 
+			CourseQuestions: [], 
+			TeacherQuestions: []
+		};
+
+		$scope.answers = [];
+		$scope.hideError=true; 
+
         $scope.init = function(evaluationID) {
             if(evaluationID !== undefined) {
                 ApiFactory.getEvaluationById(evaluationID).then(function(data) {
                     $scope.evaluation = data;
+                    $scope.getTemplate($scope.evaluation);
                 }, function(errorMessage) {
                     console.log("Error fetching evaluation: " + errorMessage);
                     $scope.errorMessage = "Error fetching evaluation: " + errorMessage;
@@ -40,6 +51,27 @@ app.controller("EvaluationController", [
         };
         $scope.init(evalID);
 
+        $scope.getTemplate = function(evaluation) {
+			ApiFactory.getTemplateById(evaluation.TemplateID).then(function(data) {
+				$scope.evaluationTemplate = data; 
+				//pretty ghetto solution
+				$scope.evaluationTemplate.CourseAnswers = [];
+				for (var i = 0; i <  $scope.evaluationTemplate.CourseQuestions.length; i++) {
+					$scope.evaluationTemplate.CourseAnswers.push("");
+				}
+				$scope.evaluationTemplate.TeacherAnswers = []; 
+				for (var i = 0; i < $scope.evaluationTemplate.TeacherQuestions.length; i++) {
+					$scope.evaluationTemplate.TeacherAnswers.push("");
+				}
+			}, function(errorMessage) {
+				console.log("failed to fetch template for evaluation " + errorMessage); 
+        	});
+        };
+
+        //New evaluation functions
+		$scope.templates = []; 
+		$scope.template = $scope.templates[0];
+		
 		$scope.addAnswer = function(question) {
 			question.Answers.push("New answer");
 		};
@@ -63,13 +95,13 @@ app.controller("EvaluationController", [
 			$scope.endTime = date; 
 		}; 
 
-		$scope.startDateChanged = function(date) {
+		/*$scope.startDateChanged = function(date) {
 
 		}; 
 
 		$scope.endDateChanged = function(date) {
 
-		};
+		};*/
 
 		/*//Timepicker variables
 		$scope.hstep = 1; 
@@ -125,6 +157,21 @@ app.controller("EvaluationController", [
 				$scope.endTime = new Date();
 			}
 			ApiFactory.newEvaluation($scope.template.ID, $scope.startTime, $scope.endTime); 
+		};
+
+		$scope.submitAnswers = function() {
+			for (var i = 0; i < $scope.evaluationTemplate.TeacherAnswers.length; i++) {
+				/*if ($scope.evaluationTemplate.TeacherAnswers[i] === "") {
+					$scope.hideError = false; 
+					return; 
+				}*/
+			}
+			for (var i = 0; i < $scope.evaluationTemplate.CourseAnswers.length; i++) {
+				if ($scope.evaluationTemplate.CourseAnswers[i] === "") {
+					$scope.hideError = false; 
+					return; 
+				}
+			}
 		};
 
 	}

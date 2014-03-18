@@ -20,7 +20,7 @@ describe('Testing the template controller, it', function () {
 
     beforeEach(function(){
         module('EvaluationApp');
-        inject(function(_$rootScope_, _$controller_, _$q_) {
+        inject(function(_$rootScope_, _$controller_, $location) {
             ApiFactory = {
                 newTemplate: function(templateObject) {
 

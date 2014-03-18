@@ -1,26 +1,32 @@
-<h1>{{ evaluation.TitleIS }}</h1>
-<input ng-model="evaluation.TitleIS" placeholder="Titillinn á kennslumatinu" class="form-control">
+<h1>{{ evaluationTemplate.TitleIS }}</h1>
 <div class="form-group">
-	<label for="textareaIntro" class="col-sm-2 control-label">Kynning</label>
-	<div class="col-sm-10">
-		<textarea ng-model="evaluation.IntroTextIS" class="form-control" id="textareaIntro">
-		</textarea>
-	</div>
+	<h3>Kynning</h3>
+	<p>{{ evaluationTemplate.IntroTextIS}}</p>
 </div>
 
 <div>
-	<h2>Spurningar úr námskeiði</h2>
-	<div ng-repeat="question in evaluation.CourseQuestions">
-		<input ng-model="question.TextIS" class="form-control" placeholder="Texti á spurningu" />
-		<div ng-show="question.Type == 'multiple' || question.Type == 'single'">
-			<p>Svarmöguleikar:</p>
-			<ul>
-				<li ng-repeat="answer in question.Answers track by $index">
-					<input ng-model="answer" />
-				</li>
-			</ul>
-			<button class="btn btn-mini" ng-click="addAnswer(question)">Bæta við svarmöguleika</button>
-		</div>
-	</div>
-	<button class="btn btn-mini" ng-click="addCourseQuestion()">Bæta við spurningu</button>
+	<h3>Spurningar úr námskeiði</h3>
+
+	<form name="courseQuestionsForm">
+		<ul>
+			<li ng-repeat="question in evaluationTemplate.CourseQuestions">
+				<h4> {{ question.TextIS }} </h4>
+				<input ng-model="evaluationTemplate.CourseAnswers[question.QuestionID]" ng-hide="question.isMultipleChoice" class="form-control">
+			</li>
+		</ul>
+	</form>
+
+	<h3>Kennaraspurningar</h3>
+
+	<form name="teacherQuestionsForm">
+		<ul>
+			<li ng-repeat="question in evaluationTemplate.TeacherQuestions">
+				<h4> {{question.TextIS}} </h4>
+				<input ng-model="evaluationTemplate.TeacherAnswers[question.QuestionID]" ng-hide="question.isMultiplechoice" class="form-control">
+			</li>
+		</ul>
+	</form>
+
+	<button name="submitButton" class="btn btn-mini" ng-click="submitAnswers()">Submit answers</button>
+	<p ng-hide="hideError">Vinsamlegast svaraðu öllum spurningunum</p>
 </div>
