@@ -161,10 +161,10 @@ app.controller("EvaluationController", [
 
 		$scope.submitAnswers = function() {
 			for (var i = 0; i < $scope.evaluationTemplate.TeacherAnswers.length; i++) {
-				/*if ($scope.evaluationTemplate.TeacherAnswers[i] === "") {
+				if ($scope.evaluationTemplate.TeacherAnswers[i] === "") {
 					$scope.hideError = false; 
 					return; 
-				}*/
+				}
 			}
 			for (i = 0; i < $scope.evaluationTemplate.CourseAnswers.length; i++) {
 				if ($scope.evaluationTemplate.CourseAnswers[i] === "") {
@@ -172,6 +172,7 @@ app.controller("EvaluationController", [
 					return; 
 				}
 			}
+			//Todo - submit to server
 		};
 
 	}
