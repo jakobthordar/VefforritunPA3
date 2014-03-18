@@ -1,5 +1,5 @@
 //Create the module 
-var app = angular.module("EvaluationApp", ["ngRoute"]);
+var app = angular.module("EvaluationApp", ["ngRoute",'ui.bootstrap']);
 
 //This defines the routing throughout the app 
 app.config(function($routeProvider, $provide, $httpProvider) {

@@ -3,14 +3,9 @@ app.controller("EvaluationController", [
 	function($scope, ApiFactory, $routeParams, $location) {
 		var evalID = $routeParams.evaluationID;
 		
+		$scope.templates = []; 
+		//$scope.template = ""; 
 		//console.log($location.url()); 
-
-		if ($location.url() == "/evaluation/new") {
-			console.log("in new evaluation"); 
-		}
-		if ($location.url() == "/evaluation/") {
-			console.log("in evaluation");
-		}
 
         $scope.init = function(evaluationID) {
             if(evaluationID !== undefined) {
@@ -31,6 +26,19 @@ app.controller("EvaluationController", [
                     TeacherQuestions: []
                 };
             }
+
+            if ($location.url() == "/evaluation/new") {
+				console.log("in new evaluation"); 
+				ApiFactory.getAllTemplates().then(function(data) {
+					$scope.templates = data; 
+					$scope.template = data[0];
+					$scope.startIsCollapsed = true; 
+					$scope.endIsCollapsed = true;
+				});
+			}
+			if ($location.url() == "/evaluation/") {
+				console.log("in evaluation");
+			}
         };
         $scope.init(evalID);
 
@@ -49,6 +57,7 @@ app.controller("EvaluationController", [
 			});
 		};
 
-		
+		$scope.startTimeChanged = function(date) {
+		};
 	}
 ]);
