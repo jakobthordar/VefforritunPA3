@@ -2,16 +2,9 @@ app.directive('myEvals', function() {
     return {
         restrict: 'E',
         controller: 'HomeController',
-        transclude: true,
+        templateUrl: 'templates/partials/myEvalsPartial.html'
         replace: true,
-        scope: {},
-        template: '<div><button>callFoo</button></div>',
-        link: function(scope, element, attr) {
-            console.log('hello');
-            
-           // scope.callFoo = (function () {
-           //     otherCtrl.foo();
-           // });
-        }
+        link: function(scope, element, attr, homeCtrl){
+        },
     };
 });

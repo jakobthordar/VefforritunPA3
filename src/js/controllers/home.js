@@ -47,10 +47,6 @@ app.controller("HomeController", [
             return isAdmin;
 		});
 
-        this.foo = (function() {
-            alert('foo');
-        });
-
         $scope.editEvaluation = (function() {
 
         });
