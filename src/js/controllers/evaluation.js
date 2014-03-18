@@ -60,12 +60,12 @@ app.controller("EvaluationController", [
 					$scope.evaluationTemplate.CourseAnswers.push("");
 				}
 				$scope.evaluationTemplate.TeacherAnswers = []; 
-				for (var i = 0; i < $scope.evaluationTemplate.TeacherQuestions.length; i++) {
+				for (i = 0; i < $scope.evaluationTemplate.TeacherQuestions.length; i++) {
 					$scope.evaluationTemplate.TeacherAnswers.push("");
 				}
 			}, function(errorMessage) {
 				console.log("failed to fetch template for evaluation " + errorMessage); 
-        	});
+			});
         };
 
         //New evaluation functions
@@ -103,10 +103,10 @@ app.controller("EvaluationController", [
 
 		};*/
 
-		/*//Timepicker variables
+		//Timepicker variables
 		$scope.hstep = 1; 
 		$scope.mstep = 15; 
-		$scope.opened = false; */
+		/*$scope.opened = false; */
 		$scope.startTime = ""; 
 		$scope.endTime = ""; 
 		/*//Datepicker functions and variables 
@@ -166,7 +166,7 @@ app.controller("EvaluationController", [
 					return; 
 				}*/
 			}
-			for (var i = 0; i < $scope.evaluationTemplate.CourseAnswers.length; i++) {
+			for (i = 0; i < $scope.evaluationTemplate.CourseAnswers.length; i++) {
 				if ($scope.evaluationTemplate.CourseAnswers[i] === "") {
 					$scope.hideError = false; 
 					return; 
