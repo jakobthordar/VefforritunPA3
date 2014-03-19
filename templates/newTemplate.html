@@ -24,6 +24,24 @@
 		<p><b>ImageURL:</b> {{ courseQuestion.ImageURL }} </p>
 		<p><b>Type:</b> {{ courseQuestion.Type }} </p>
 	</li>
+	<li ng-repeat="question in courseOptionQuestions">
+		<h4>Option question number: {{ question.ID }} </h4>
+		TextIS: {{ question.TextIS }} </br>
+		TextEN: {{ question.TextEN }} </br>
+		Type: {{ question.Type }} </br>
+
+		<b>Options</b>: </br>
+		<ul>
+			<li ng-repeat="option in question.Answers">
+				<p><b>Options {{ option.ID }} </b> </p>
+				TextIS: {{ option.TextIS }} </br>
+				TextEN: {{ option.TextEN }} </br>
+				Weight: {{ option.Weight }} </br>
+				ImageURL: {{ option.ImageURL }} </br>
+			</li>
+		</ul>
+	</li>
+
 	<div ng-hide="hideQuestionForm">
 		<form name="questionForm" novalidate>
 			<h3>New Question: </h3>
@@ -31,6 +49,7 @@
 			<input ng-model="question.TextEN" placeholder="TitleEN" class="form-control">
 			<input ng-model="question.ImageURL" placeholder="ImageURL" class="form-control">
 			<input ng-model="question.Type" placeholder="Type" class="form-control">
+			<p><b>Teacher or Course question: </b><select ng-model="typeSelection" ng-options="type for type in teacherOrCourse"></select></p>
 			<button class="btn btn-mini" ng-click="submitQuestion(question)">Add course question</button>
 		</form>
 	</div>
@@ -38,24 +57,62 @@
 	<h3>Teacher questions</h3>
 	<p ng-hide="!noTeacherQuestions">You have not added any teacher questions to this template</p>
 	<li ng-repeat="teacherQuestion in teacherQuestions">
-		<h4>Question number: {{ teacherQuestion.ID }} </h4>
+		<h4>Text question number: {{ teacherQuestion.ID }} </h4>
 		TextIS: {{ teacherQuestion.TextIS }} </br>
 		TextEN: {{ teacherQuestion.TextEN }} </br>
 		ImageURL: {{ teacherQuestion.ImageURL }} </br>
 		Type: {{ teacherQuestion.Type }} </br>
 	</li>
+	<li ng-repeat="question in teacherOptionQuestions">
+		<h4>Option question number: {{ question.ID }} </h4>
+		TextIS: {{ question.TextIS }} </br>
+		TextEN: {{ question.TextEN }} </br>
+		Type: {{ question.Type }} </br>
 
-	<div ng-hide="hideTeacherQuestionForm">
-		<form name="teacherQuestionForm" novalidate>
-			<input ng-model="teacherQuestion.TextIS" placeholder="TitleIS" class="form-control">
-			<input ng-model="teacherQuestion.TextEN" placeholder="TitleEN" class="form-control">
-			<input ng-model="teacherQuestion.ImageURL" placeholder="ImageURL" class="form-control">
-			<input ng-model="teacherQuestion.Type" placeholder="Type" class="form-control">
-			<button class="btn btn-mini" ng-click="submitTeacherQuestion(teacherQuestion)">Add teacher question</button>
+		<b>Options</b>: </br>
+		<ul>
+			<li ng-repeat="option in question.Answers">
+				<p><b>Options {{ option.ID }} </b> </p>
+				TextIS: {{ option.TextIS }} </br>
+				TextEN: {{ option.TextEN }} </br>
+				Weight: {{ option.Weight }} </br>
+				ImageURL: {{ option.ImageURL }} </br>
+			</li>
+		</ul>
+	</li>
+
+	
+	<div ng-hide="hideMultipleQuestionForm" >
+		<h3>New multiple choice question</h3>
+		<form name="multipleChoiceQuestionForm" novalidate>
+			<input ng-model="optionQuestion.TextIS" placeholder="TitleIS" class="form-control">
+			<input ng-model="optionQuestion.TextEN" placeholder="TitleEN" class="form-control">
+			<input ng-model="optionQuestion.ImageURL" placeholder="ImageURL" class="form-control">
+			<p><b>Teacher or Course question: </b><select ng-model="typeSelection" ng-options="type for type in teacherOrCourse"></select></p>
+			
+			<br/>
+			
+			<ul>
+				<li ng-repeat="questionOption in questionOptions">
+					<b>{{questionOption.No}}.</b> {{questionOption.TextEN}}
+				</li>
+			</ul>
+
+			<div ng-hiden="hideOptionEntry">
+				<input ng-model="optionEntryIS" placeholder="Icelandic Text" class="form-control" >
+				<input ng-model="optionEntryEN" placeholder="English Text" class="form-control">
+				<input ng-model="optionEntryWeight" placeholder="Option Weight", class="form-control">
+				<input ng-model="optionEntryImageURL" placeholder="Option Image Url" class="form-control">
+				<button class="btn btn-mini" ng-click="optionSubmit()">Add option</button>
+			</div>
+			<button class="btn btn-mini" ng-click="addOption()" ng-hide="hideOptionButton">Submit </button>
+			<button class="btn btn-mini" ng-click="submitOptionQuestion(optionQuestion)" ng-hide="hideSubmitButton">Finish question </button>
 		</form>
 	</div>
-	<button ng-hide="!hideQuestionForm" class="btn btn-mini" ng-click="displayQuestionForm()">Add course question</button> 
-	<button ng-hide="!hideTeacherQuestionForm" class="btn btn-mini" ng-click="displayTeacherQuestionForm()">Add teacher question</button> </br>
+	<div ng-hide="!typePromptToggle">
+		<button class="btn btn-mini" ng-click="displayQuestionForm()">Add text question</button>
+		<button class="btn btn-mini" ng-click="addMultipleChoiceQuestion()">Add multiple choice question</button>
+	</div>
 	<button name="submitButton" ng-hide="!infoSubmitted" class="btn btn-mini" ng-click="submitTemplate()">Submit template</button>
 	<p ng-hide="hideError">Template information must be entered along with at least one question before submitting!</p>
 </ul>

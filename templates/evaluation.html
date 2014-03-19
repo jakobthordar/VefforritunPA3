@@ -9,9 +9,9 @@
 
 	<form name="courseQuestionsForm">
 		<ul>
-			<li ng-repeat="question in evaluationTemplate.CourseQuestions">
-				<h4> {{ question.TextIS }} </h4>
-				<input ng-model="evaluationTemplate.CourseAnswers[question.QuestionID]" ng-hide="question.isMultipleChoice" class="form-control">
+			<li ng-repeat="question in evaluationTemplate.CourseAnswers">
+				<h4> {{ question.Question }} </h4>
+				<input ng-model="question.Answer" ng-hide="question.isMultipleChoice" class="form-control">
 			</li>
 		</ul>
 	</form>
@@ -20,9 +20,9 @@
 
 	<form name="teacherQuestionsForm">
 		<ul>
-			<li ng-repeat="question in evaluationTemplate.TeacherQuestions">
-				<h4> {{question.TextIS}} </h4>
-				<input ng-model="evaluationTemplate.TeacherAnswers[question.QuestionID]" ng-hide="question.isMultiplechoice" class="form-control">
+			<li ng-repeat="question in evaluationTemplate.TeacherAnswers">
+				<h4> {{question.Question}} </h4>
+				<input ng-model="question.Answer" ng-hide="question.isMultiplechoice" class="form-control">
 			</li>
 		</ul>
 	</form>

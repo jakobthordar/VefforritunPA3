@@ -57,11 +57,19 @@ app.controller("EvaluationController", [
 				//pretty ghetto solution
 				$scope.evaluationTemplate.CourseAnswers = [];
 				for (var i = 0; i <  $scope.evaluationTemplate.CourseQuestions.length; i++) {
-					$scope.evaluationTemplate.CourseAnswers.push("");
+					$scope.evaluationTemplate.CourseAnswers.push({
+						Question: $scope.evaluationTemplate.CourseQuestions[i].TextIS,
+						ID: $scope.evaluationTemplate.CourseQuestions[i].ID, 
+						Answer: ""
+					});
 				}
 				$scope.evaluationTemplate.TeacherAnswers = []; 
 				for (i = 0; i < $scope.evaluationTemplate.TeacherQuestions.length; i++) {
-					$scope.evaluationTemplate.TeacherAnswers.push("");
+					$scope.evaluationTemplate.TeacherAnswers.push({
+						Question: $scope.evaluationTemplate.TeacherQuestions[i].TextIS,
+						ID: $scope.evaluationTemplate.TeacherQuestions[i].ID, 
+						Answer: ""
+					});
 				}
 			}, function(errorMessage) {
 				console.log("failed to fetch template for evaluation " + errorMessage); 
@@ -161,18 +169,38 @@ app.controller("EvaluationController", [
 
 		$scope.submitAnswers = function() {
 			for (var i = 0; i < $scope.evaluationTemplate.TeacherAnswers.length; i++) {
-				if ($scope.evaluationTemplate.TeacherAnswers[i] === "") {
+				if ($scope.evaluationTemplate.TeacherAnswers[i].Answer === "") {
 					$scope.hideError = false; 
 					return; 
 				}
 			}
 			for (i = 0; i < $scope.evaluationTemplate.CourseAnswers.length; i++) {
-				if ($scope.evaluationTemplate.CourseAnswers[i] === "") {
+				if ($scope.evaluationTemplate.CourseAnswers[i].Answer === "") {
 					$scope.hideError = false; 
 					return; 
 				}
 			}
-			//Todo - submit to server
+			retObjs = []; 
+			for (i = 0; i < $scope.evaluationTemplate.TeacherAnswers.length; i++) {
+				retObjs.push({
+					QuestionID:  $scope.evaluationTemplate.TeacherAnswers.ID,
+					TeacherSSN: null, 
+					Value: $scope.evaluationTemplate.TeacherAnswers.Answer
+				});
+			}
+			for (i = 0; i < $scope.evaluationTemplate.CourseAnswers.length; i++) {
+				retObjs.push({
+					QuestionID:  $scope.evaluationTemplate.CourseAnswers.ID,
+					TeacherSSN: null, 
+					Value: $scope.evaluationTemplate.CourseAnswers.Answer
+				});
+			}
+			ApiFactory.saveAnswers('T-427-WEPO', null, $scope.evaluation.ID, retObjs).then(function(data) {
+				console.log("success sending answers!");
+			},
+			function(errorMessage) {
+				console.log("failed to send answers: " + errorMessage);
+			});
 		};
 
 	}
