@@ -1,5 +1,5 @@
 describe('Testing the evaluation controller, it', function () {
-    var rootScope, ctrl, $timeout, ApiFactory;
+    var rootScope, scope, ctrl, $timeout, ApiFactory, locationMock;
     var evalDataMock = {
         TitleIS: "dummyTitleIS",
         TitleEN: "dummyTitleEN",
@@ -9,6 +9,9 @@ describe('Testing the evaluation controller, it', function () {
         TeacherQuestions: []
     };
 
+    var locationMock = {
+        path: "herp"
+    };
     var emptyEvalDataMock = {
         TitleIS: "",
         TitleEN: "",
@@ -50,13 +53,10 @@ describe('Testing the evaluation controller, it', function () {
 
             spyOn(ApiFactory, 'getEvaluationById').andCallThrough();
             rootScope = _$rootScope_.$new();
-
             ctrl = _$controller_('EvaluationController', {
                 $scope: rootScope,
                 ApiFactory: ApiFactory,
             });
-
-
         });
     });
 

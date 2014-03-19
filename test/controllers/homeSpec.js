@@ -111,16 +111,28 @@ describe("Testing the home controller, it", function() {
     });
 
     it('should only show an add new eval button for admins', function() {
-        var foo = rootScope.showButton();
+        var foo = rootScope.showButton();0
         expect(ApiFactory.getUser).toHaveBeenCalled();
         expect(foo).toBe(true);
     });
 
-    it('should be able to add a new evaluation', function() {
+    it('should be able to go to the add new evaluation page', function() {
         rootScope.newEval();
         deferred.resolve("success");
         rootScope.$digest();
         //expect(ApiFactory.getAllEvaluations).toHaveBeenCalled();
         //expect(ApiFactory.addEvaluation).toHaveBeenCalled();
     });
+
+    it('should be able to go to the edit evaluation page', function() {
+        rootScope.editEvaluation(); 
+        deferred.resolve("success"); 
+        rootScope.$digest(); 
+    });
+
+    it('should be able to go to the new template function', function() {
+        rootScope.newTemplate(); 
+        deferred.resolve("success"); 
+        rootScope.$digest(); 
+    }); 
 });

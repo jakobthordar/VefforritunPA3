@@ -37,16 +37,7 @@ app.controller("EvaluationController", [
             }
 
             if ($location.url() == "/evaluation/new") {
-				console.log("in new evaluation"); 
-				ApiFactory.getAllTemplates().then(function(data) {
-					$scope.templates = data; 
-					$scope.template = data[0];
-					$scope.startIsCollapsed = true; 
-					$scope.endIsCollapsed = true;
-				});
-			}
-			if ($location.url() == "/evaluation/") {
-				console.log("in evaluation");
+				$scope.newEvaluation(); 
 			}
         };
         $scope.init(evalID);
@@ -55,27 +46,59 @@ app.controller("EvaluationController", [
 			ApiFactory.getTemplateById(evaluation.TemplateID).then(function(data) {
 				$scope.evaluationTemplate = data; 
 				//pretty ghetto solution
-				$scope.evaluationTemplate.CourseAnswers = [];
+				$scope.evaluationTemplate.CourseTextQuestions = [];
+				$scope.evaluationTemplate.CourseMultiQuestions = []; 
+
+
+				var question = ""; 
 				for (var i = 0; i <  $scope.evaluationTemplate.CourseQuestions.length; i++) {
-					$scope.evaluationTemplate.CourseAnswers.push({
+					//if there are no answers, this is a text question
+					question = {
 						Question: $scope.evaluationTemplate.CourseQuestions[i].TextIS,
 						ID: $scope.evaluationTemplate.CourseQuestions[i].ID, 
-						Answer: ""
-					});
-				}
-				$scope.evaluationTemplate.TeacherAnswers = []; 
+						Answer: "",
+						Options: $scope.evaluationTemplate[i].Answers
+					};
+					if ($scope.evaluationTemplate.CourseQuestions[i].Answers.length === 0) {
+						$scope.evaluationTemplate.CourseAnswers.push(question);
+					} 
+					else {
+						$scope.evaluationTemplate.CourseMultiQuestions.push(question);
+					}
+				}				
+				$scope.evaluationTemplate.TeacherTextQuestions = []; 
+				$scope.evaluationTemplate.TeacherMultiQuestions = []; 
 				for (i = 0; i < $scope.evaluationTemplate.TeacherQuestions.length; i++) {
-					$scope.evaluationTemplate.TeacherAnswers.push({
+					question = {
 						Question: $scope.evaluationTemplate.TeacherQuestions[i].TextIS,
 						ID: $scope.evaluationTemplate.TeacherQuestions[i].ID, 
-						Answer: ""
-					});
+						Answer: "",
+						Options: $scope.evaluationTempalte[i].Answers
+					};
+					if ($scope.evaluationTemplate.TeacherQuestions[i].Answers.length === 0) {
+						$scope.evaluationTemplate.TeacherAnswers.push(question);
+					}
+					else {
+						$scope.evaluationTemplate.push(question);
+					}
+					
 				}
+				$scope.evaluationTemplate.CourseOptionAnswers = []; 
+
 			}, function(errorMessage) {
 				console.log("failed to fetch template for evaluation " + errorMessage); 
 			});
         };
 
+        $scope.newEvaluation = function() {
+			console.log("in new evaluation"); 
+			ApiFactory.getAllTemplates().then(function(data) {
+				$scope.templates = data; 
+				$scope.template = data[0];
+				$scope.startIsCollapsed = true; 
+				$scope.endIsCollapsed = true;
+			});
+        };
         //New evaluation functions
 		$scope.templates = []; 
 		$scope.template = $scope.templates[0];
