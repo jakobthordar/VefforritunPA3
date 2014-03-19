@@ -134,5 +134,11 @@ describe("Testing the home controller, it", function() {
         rootScope.newTemplate(); 
         deferred.resolve("success"); 
         rootScope.$digest(); 
-    }); 
+    });
+
+    it('should be able to view the evaluation results', function() {
+        rootScope.results(); 
+        deferred.resolve("success"); 
+        rootScope.$digest(); 
+    });
 });

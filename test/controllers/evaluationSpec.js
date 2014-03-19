@@ -1,5 +1,5 @@
 describe('Testing the evaluation controller, it', function () {
-    var rootScope, scope, ctrl, $timeout, ApiFactory, locationMock;
+    var rootScope, scope, ctrl, $timeout, ApiFactory, locationMock, location;
     var evalDataMock = {
         TitleIS: "dummyTitleIS",
         TitleEN: "dummyTitleEN",
@@ -23,7 +23,8 @@ describe('Testing the evaluation controller, it', function () {
 
     beforeEach(function(){
         module('EvaluationApp');
-        inject(function(_$rootScope_, _$controller_, _$q_) {
+        inject(function(_$rootScope_, $location, _$controller_, _$q_) {
+            location = $location; 
             ApiFactory = {
                 getEvaluationById: function(evaluationID){
                     deferred = _$q_.defer();
@@ -48,6 +49,8 @@ describe('Testing the evaluation controller, it', function () {
                             ID:3
                         }
                     ];
+                    deferred = _$q_.defer(); 
+                    return deferred.promise;
                 },
                 saveAnswers: function(course, semester, evalID, answers) {
                     deferred = _$q_.defer(); 
@@ -56,6 +59,8 @@ describe('Testing the evaluation controller, it', function () {
             };
 
             spyOn(ApiFactory, 'getEvaluationById').andCallThrough();
+            spyOn(ApiFactory, 'getAllTemplates').andCallThrough();
+            spyOn(ApiFactory, 'saveAnswers').andCallThrough();
             rootScope = _$rootScope_.$new();
             ctrl = _$controller_('EvaluationController', {
                 $scope: rootScope,
@@ -162,11 +167,18 @@ describe('Testing the evaluation controller, it', function () {
     });
 
     it('should be able to get the template of the evaluation that it is displaying', function() {
-       /* var evaluation = {
+        var evaluation = {
             TemplateID: 1
         };
         rootScope.getTemplate(evaluation); 
-    */
+        deferred.resolve({
+            CourseQuestions: [],
+            TeacherQuestions: []
+        });
+        rootScope.$digest();
+        rootScope.getTemplate(evaluation); 
+        deferred.reject("Oh no"); 
+        rootScope.$digest();
     });
 
     it('should have a callback function for get template that works', function() {
@@ -174,6 +186,27 @@ describe('Testing the evaluation controller, it', function () {
             CourseQuestions: [],
             TeacherQuestions: []
         }
+        data.CourseQuestions.push({
+                Answers: [],
+                ID: 1,
+                TextIS: "herp",
+                TextEN: "derp"});
+        data.CourseQuestions.push({
+                Answers: ["", ""],
+                ID: 2, 
+                TextIS: "derp",
+                TextEN: "herp"});
+        data.TeacherQuestions.push({
+                Answers: [],
+                ID: 1,
+                TextIS: "herp",
+                TextEN: "derp"});
+        data.TeacherQuestions.push({
+                Answers: ["", ""],
+                ID: 2, 
+                TextIS: "derp",
+                TextEN: "herp"});
+            
         rootScope.getTemplateCallBack(data);
     });
 
@@ -191,8 +224,14 @@ describe('Testing the evaluation controller, it', function () {
                     ID: 2
                 }
             ],
-            TeacherMultiQuestions: [],
-            CourseMultiQuestions: []
+            TeacherMultiQuestions: [{
+                ID: 3,
+                Selected: "herp"
+            }],
+            CourseMultiQuestions: [{
+                ID: 4,
+                Selected: "derp"
+            }]
         }
         rootScope.submitAnswers();
         rootScope.evaluationTemplate.TeacherTextQuestions[0].Answer = "";
@@ -200,5 +239,58 @@ describe('Testing the evaluation controller, it', function () {
         rootScope.evaluationTemplate.CourseTextQuestions[0].Answer = ""; 
         rootScope.evaluationTemplate.TeacherTextQuestions[0].Answer = "herp";
         rootScope.submitAnswers(); 
+        expect(ApiFactory.saveAnswers).toHaveBeenCalled(); 
+        deferred.resolve(); 
+        rootScope.$digest(); 
+    });
+
+    it('should log an error message when it fails to send answers', function() {
+        rootScope.evaluationTemplate = {
+            TeacherTextQuestions: [
+                {
+                    Answer: "herp",
+                    ID: 1   
+                }
+            ],
+            CourseTextQuestions: [
+                {
+                    Answer: "derp", 
+                    ID: 2
+                }
+            ],
+            TeacherMultiQuestions: [{
+                ID: 3,
+                Selected: "herp"
+            }],
+            CourseMultiQuestions: [{
+                ID: 4,
+                Selected: "derp"
+            }]
+        };
+        rootScope.submitAnswers(); 
+        deferred.reject("oh no"); 
+        rootScope.$digest();
+    });
+
+    it('should hide UI elements when it receives all templates', function() {
+        var data = [""]; 
+        rootScope.getAllTemplatesCallBack(data);
+        expect(rootScope.template).toBe(""); 
+        expect(rootScope.startIsCollapsed).toBe(true); 
+        expect(rootScope.startIsCollapsed).toBe(true); 
+    });
+
+    it('should be able to add a new evaluation', function() {
+        rootScope.newEvaluation(); 
+        deferred.resolve([""]);
+        rootScope.$digest();
+        expect(ApiFactory.getAllTemplates).toHaveBeenCalled();
+    });
+
+    it('should route according to the browser URL', function() {
+        spyOn(rootScope, 'newEvaluation').andCallThrough();
+        location.path('/evaluation/new');
+        rootScope.init(); 
+        expect(rootScope.newEvaluation).toHaveBeenCalled();
     });
 });

@@ -18,11 +18,15 @@ app.controller("EvaluationController", [
 		$scope.newEvaluation = function() {
 			console.log("in new evaluation"); 
 			ApiFactory.getAllTemplates().then(function(data) {
-				$scope.templates = data; 
-				$scope.template = data[0];
-				$scope.startIsCollapsed = true; 
-				$scope.endIsCollapsed = true;
+				$scope.getAllTemplatesCallBack(data); 
 			});
+        };
+
+        $scope.getAllTemplatesCallBack = function(data) {
+			$scope.templates = data; 
+			$scope.template = data[0];
+			$scope.startIsCollapsed = true; 
+			$scope.endIsCollapsed = true;
         };
 
         $scope.init = function(evaluationID) {
@@ -67,7 +71,7 @@ app.controller("EvaluationController", [
 			$scope.evaluationTemplate.CourseMultiQuestions = []; 
 			$scope.evaluationTemplate.TeacherTextQuestions = []; 
 			$scope.evaluationTemplate.TeacherMultiQuestions = []; 
-			
+
 			var question = ""; 
 			for (var i = 0; i <  $scope.evaluationTemplate.CourseQuestions.length; i++) {
 				//if there are no answers, this is a text question
