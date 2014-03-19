@@ -1,15 +1,15 @@
-<h1>{{ evaluationTemplate.TitleIS }}</h1>
+<h1>{{ evaluationTemplate.TitleEN }}</h1>
 <div class="form-group">
-	<h3>Kynning</h3>
-	<p>{{ evaluationTemplate.IntroTextIS}}</p>
+	<h3>Introduction</h3>
+	<p>{{ evaluationTemplate.IntroTextEN }}</p>
 </div>
 
 <div>
-	<h3>Spurningar úr námskeiði</h3>
+	<h3>Course Questions</h3>
 
 	<form name="courseQuestionsForm">
 		<ul>
-			<li ng-repeat="question in evaluationTemplate.CourseAnswers">
+			<li ng-repeat="question in evaluationTemplate.CourseTextQuestions">
 				<h4> {{ question.Question }} </h4>
 				<input ng-model="question.Answer" ng-hide="question.isMultipleChoice" class="form-control">
 			</li>
@@ -23,11 +23,11 @@
 		</li>
 	</ul>	
 
-	<h3>Kennaraspurningar</h3>
+	<h3>Teacher Questions</h3>
 
 	<form name="teacherQuestionsForm">
 		<ul>
-			<li ng-repeat="question in evaluationTemplate.TeacherAnswers">
+			<li ng-repeat="question in evaluationTemplate.TeacherTextQuestions">
 				<h4> {{question.Question}} </h4>
 				<input ng-model="question.Answer" ng-hide="question.isMultiplechoice" class="form-control">
 			</li>
@@ -44,5 +44,5 @@
 
 
 	<button name="submitButton" class="btn btn-mini" ng-click="submitAnswers()">Submit answers</button>
-	<p ng-hide="hideError">Vinsamlegast svaraðu öllum spurningunum</p>
+	<p ng-hide="hideError">Please answer all questions</p>
 </div>

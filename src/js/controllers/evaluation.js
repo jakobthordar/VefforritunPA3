@@ -220,16 +220,16 @@ app.controller("EvaluationController", [
 			retObjs = []; 
 			for (i = 0; i < $scope.evaluationTemplate.TeacherTextQuestions.length; i++) {
 				retObjs.push({
-					QuestionID:  $scope.evaluationTemplate.TeacherTextQuestions.ID,
+					QuestionID:  $scope.evaluationTemplate.TeacherTextQuestions[i].ID,
 					TeacherSSN: null, 
-					Value: $scope.evaluationTemplate.TeacherTextQuestions.Answer
+					Value: $scope.evaluationTemplate.TeacherTextQuestions[i].Answer
 				});
 			}
 			for (i = 0; i < $scope.evaluationTemplate.CourseTextQuestions.length; i++) {
 				retObjs.push({
-					QuestionID:  $scope.evaluationTemplate.CourseTextQuestions.ID,
+					QuestionID:  $scope.evaluationTemplate.CourseTextQuestions[i].ID,
 					TeacherSSN: null, 
-					Value: $scope.evaluationTemplate.CourseTextQuestions.Answer
+					Value: $scope.evaluationTemplate.CourseTextQuestions[i].Answer
 				});
 			}
 			for (i = 0; i < $scope.evaluationTemplate.TeacherMultiQuestions.length; i++) {
