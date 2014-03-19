@@ -40,6 +40,9 @@ app.controller("HomeController", [
         this.init = (function() {
             $scope.getAllEvals();
             $scope.getMyCourses();
+            /*ApiFactory.getEvaluationById(1).then(function(data) {
+                console.log(data);
+            });*/
         });
         this.init();
 

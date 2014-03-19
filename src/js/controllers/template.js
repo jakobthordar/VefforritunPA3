@@ -5,37 +5,56 @@ app.controller("TemplateController", [
 		$scope.init = function() {
 			$scope.templateInfo = {}; 
 			$scope.courseQuestions = []; 
+			$scope.courseOptionQuestions = [];
 			$scope.teacherQuestions = []; 
+			$scope.teacherOptionQuestions = [];
 			$scope.infoSubmitted = false; 
 			$scope.hideQuestionForm = true; 
-			$scope.hideTeacherQuestionForm = true; 
+			$scope.hideQuestionForm = true; 
 			$scope.noTeacherQuestions = true; 
 			$scope.noCourseQuestions = true; 
 			$scope.hideError = true; 
+			$scope.typePromptToggle = true; 
+			$scope.hideOptionButton=true;
+			$scope.questionOptions = [];
+			$scope.hideOptionEntry=true; 
+			$scope.hideMultipleQuestionForm = true; 
+			$scope.hideAddQuestionButton = false; 
+			$scope.hideSubmitButton = true; 
+			$scope.teacherOrCourse= ["Teacher", "Course"]; 
+			$scope.typeSelection = $scope.teacherOrCourse[0];
 		};
 		$scope.submitQuestion = ( function(question) {
-			$scope.courseQuestions.push( {
-				ID: $scope.courseQuestions.length,
+			var newQuestion = {
 				TextIS: question.TextIS, 
 				TextEN: question.TextEN, 
 				ImageURL: question.ImageURL, 
-				Type: question.Type
-			});
+				Type: "text"
+			};
+			if ($scope.typeSelection === "Teacher") {
+				newQuestion.ID = $scope.teacherQuestions.length; 
+				$scope.teacherQuestions.push(newQuestion);
+				$scope.noTeacherQuestions = false; 
+			}
+			if ($scope.typeSelection === "Course") {
+				newQuestion.ID = $scope.courseQuestions.length;
+				$scope.courseQuestions.push(newQuestion);
+				$scope.noCourseQuestions = false;
+			}
 			$scope.hideQuestionForm = true; 
 			question.ID = ""; 
 			question.TextIS = ""; 
 			question.TextEN = ""; 
 			question.ImageURL = ""; 
 			question.Type = ""; 
-			$scope.noCourseQuestions = false;
 		});
-		$scope.submitTeacherQuestion = ( function(teacherQuestion) {
+		/*$scope.submitTeacherQuestion = ( function(teacherQuestion) {
 			$scope.teacherQuestions.push( {
 				ID: $scope.teacherQuestions.length, 
 				TextIS: teacherQuestion.TextIS, 
 				TextEN: teacherQuestion.TextEN, 
 				ImageURL: teacherQuestion.ImageURL, 
-				Type: teacherQuestion.Type
+				Type: "text"
 			});
 			$scope.hideTeacherQuestionForm = true; 
 			teacherQuestion.ID = ""; 
@@ -44,12 +63,9 @@ app.controller("TemplateController", [
 			teacherQuestion.ImageURL = ""; 
 			teacherQuestion.Type = ""; 
 			$scope.noTeacherQuestions = false; 
-		});
+		});*/
 		$scope.displayQuestionForm = ( function() {
 			$scope.hideQuestionForm = false; 
-		});
-		$scope.displayTeacherQuestionForm = ( function() {
-			$scope.hideTeacherQuestionForm = false; 
 		});
 		$scope.submitTemplateInfo = ( function(templateInfo) {
 			$scope.templateInfo = templateInfo;
@@ -71,6 +87,80 @@ app.controller("TemplateController", [
 			else {
 				$scope.hideError = false; 
 			}
+		});
+		$scope.typePrompt = ( function() {
+			$scope.typePromptToggle = !$scope.typePromptToggle; 
+			$scope.hideAddQuestionButton = !$scope.hideAddQuestionButton;
+		});
+		$scope.addTextQuestion = ( function() {
+			$scope.typePromptToggle = !$scope.typePromptToggle; 
+			$scope.hideQuestionForm = !$scope.hideQuestionForm; 
+		});
+		$scope.addMultipleChoiceQuestion = ( function() {
+			$scope.typePromptToggle = !$scope.typePromptToggle; 
+			$scope.hideMultipleQuestionForm = !$scope.hideMultipleQuestionForm; 
+		});
+		$scope.addOption = (function() {
+			if(!$scope.hideOptionButton) {
+				$scope.hideOptionButton = true;
+			}
+			$scope.hideOptionEntry = !$scope.hideOptionEntry; 
+		}); 
+		$scope.optionSubmit = (function() {
+			$scope.hideOptionEntry = !$scope.hideOptionEntry; 
+			$scope.questionOptions.push({
+				No: $scope.questionOptions.length + 1, 
+				TextIS: $scope.optionEntryIS, 
+				TextEN: $scope.optionEntryEN, 
+				Weight: $scope.optionEntryWeight,
+				ImageURL: $scope.optionEntryImageURL
+			}); 
+			$scope.optionEntryIS = "";
+			$scope.optionEntryEN = "";
+			$scope.optionEntryWeight = ""; 
+			$scope.optionEntryImageURL = ""; 
+			$scope.hideSubmitButton = false;
+		});
+		$scope.submitOptionQuestion = (function(optionQuestion) {
+			var answers = [];
+			for (var i = 0; i < $scope.questionOptions.length; i++) {
+				answers.push({
+					ID: i, 
+					TextIS: $scope.questionOptions[i].TextIS, 
+					TextEN: $scope.questionOptions[i].TextEN, 
+					Weight: $scope.questionOptions[i].Weight,
+					ImageURL: $scope.questionOptions[i].ImageURL
+				});
+			}
+			$scope.questionOptions = [];
+			var question = {
+				TextIS: optionQuestion.TextIS, 
+				TextEN: optionQuestion.TextEN, 
+				ImageURL: optionQuestion.ImageURL, 
+				Answers: answers,
+				Type: "multi"
+			};
+			if ($scope.typeSelection === "Teacher") {
+				question.ID = $scope.teacherOptionQuestions.length; 
+				$scope.teacherOptionQuestions.push(question);
+				console.log("Teacher option questions: " + $scope.teacherOptionQuestions.length);
+				$scope.noTeacherQuestions = false; 
+			}
+			if ($scope.typeSelection === "Course") {
+				question.ID = $scope.courseOptionQuestions.length;
+				$scope.courseOptionQuestions.push(question);
+				console.log("Course option questions: " + $scope.courseOptionQuestions.length);
+				$scope.noCourseQuestions = false;
+			}
+			
+
+			$scope.hideMultipleQuestionForm = true; 
+			$scope.typePromptToggle = true;
+			optionQuestion.ID = ""; 
+			optionQuestion.TextIS = ""; 
+			optionQuestion.TextEN = ""; 
+			optionQuestion.ImageURL = ""; 
+			optionQuestion.Type = ""; 
 		});
 		$scope.init();	
 	}
