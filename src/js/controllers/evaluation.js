@@ -61,48 +61,47 @@ app.controller("EvaluationController", [
         };
 
         $scope.getTemplateCallBack = function(data) {
-        	$scope.evaluationTemplate = data; 
-				//pretty ghetto solution
-				$scope.evaluationTemplate.CourseTextQuestions = [];
-				$scope.evaluationTemplate.CourseMultiQuestions = []; 
-				$scope.evaluationTemplate.TeacherTextQuestions = []; 
-				$scope.evaluationTemplate.TeacherMultiQuestions = []; 
-
-
-				var question = ""; 
-				for (var i = 0; i <  $scope.evaluationTemplate.CourseQuestions.length; i++) {
-					//if there are no answers, this is a text question
-					question = {
-						Question: $scope.evaluationTemplate.CourseQuestions[i].TextIS,
-						ID: $scope.evaluationTemplate.CourseQuestions[i].ID, 
-						Answer: "",
-						Options: $scope.evaluationTemplate.CourseQuestions[i].Answers
-					};
-					if ($scope.evaluationTemplate.CourseQuestions[i].Answers.length === 0) {
-						$scope.evaluationTemplate.CourseTextQuestions.push(question);
-					} 
-					else {
-						question.Selected = question.Options[0]; 
-						$scope.evaluationTemplate.CourseMultiQuestions.push(question);
-					}
-				}				
-				for (i = 0; i < $scope.evaluationTemplate.TeacherQuestions.length; i++) {
-					question = {
-						Question: $scope.evaluationTemplate.TeacherQuestions[i].TextIS,
-						ID: $scope.evaluationTemplate.TeacherQuestions[i].ID, 
-						Answer: "",
-						Options: $scope.evaluationTemplate.TeacherQuestions[i].Answers
-					};
-					if ($scope.evaluationTemplate.TeacherQuestions[i].Answers.length === 0) {
-						$scope.evaluationTemplate.TeacherTextQuestions.push(question);
-					}
-					else {
-						question.Selected = question.Options[0]; 
-						$scope.evaluationTemplate.TeacherMultiQuestions.push(question);
-					}
-					
+			$scope.evaluationTemplate = data; 
+			//pretty ghetto solution
+			$scope.evaluationTemplate.CourseTextQuestions = [];
+			$scope.evaluationTemplate.CourseMultiQuestions = []; 
+			$scope.evaluationTemplate.TeacherTextQuestions = []; 
+			$scope.evaluationTemplate.TeacherMultiQuestions = []; 
+			
+			var question = ""; 
+			for (var i = 0; i <  $scope.evaluationTemplate.CourseQuestions.length; i++) {
+				//if there are no answers, this is a text question
+				question = {
+					Question: $scope.evaluationTemplate.CourseQuestions[i].TextIS,
+					ID: $scope.evaluationTemplate.CourseQuestions[i].ID, 
+					Answer: "",
+					Options: $scope.evaluationTemplate.CourseQuestions[i].Answers
+				};
+				if ($scope.evaluationTemplate.CourseQuestions[i].Answers.length === 0) {
+					$scope.evaluationTemplate.CourseTextQuestions.push(question);
+				} 
+				else {
+					question.Selected = question.Options[0]; 
+					$scope.evaluationTemplate.CourseMultiQuestions.push(question);
 				}
-				$scope.evaluationTemplate.CourseOptionAnswers = []; 
+			}				
+			for (i = 0; i < $scope.evaluationTemplate.TeacherQuestions.length; i++) {
+				question = {
+					Question: $scope.evaluationTemplate.TeacherQuestions[i].TextIS,
+					ID: $scope.evaluationTemplate.TeacherQuestions[i].ID, 
+					Answer: "",
+					Options: $scope.evaluationTemplate.TeacherQuestions[i].Answers
+				};
+				if ($scope.evaluationTemplate.TeacherQuestions[i].Answers.length === 0) {
+					$scope.evaluationTemplate.TeacherTextQuestions.push(question);
+				}
+				else {
+					question.Selected = question.Options[0]; 
+					$scope.evaluationTemplate.TeacherMultiQuestions.push(question);
+				}
+				
+			}
+			$scope.evaluationTemplate.CourseOptionAnswers = []; 
         };
 
         
