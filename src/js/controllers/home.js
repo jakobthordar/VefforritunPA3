@@ -11,8 +11,10 @@ app.controller("HomeController", [
 			if (user.Role === "admin") {
                 isAdmin = true;
 			}
+
             return isAdmin;
 		});
+
         $scope.editEvaluation = (function() {
             $location.path("/evaluation/edit");
         });

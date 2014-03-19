@@ -110,11 +110,18 @@ describe("Testing the home controller, it", function() {
         expect(ApiFactory.getMyCourses).toHaveBeenCalled();
     });
 
-    it('should only show an add new eval button for admins', function() {
-        var foo = rootScope.showButton();0
+    it('should show an add new eval button for admins', function() {
+        var foo = rootScope.showButton();
         expect(ApiFactory.getUser).toHaveBeenCalled();
         expect(foo).toBe(true);
     });
+
+    it('should not show an add new eval button for non-admins', function() {
+        userMock = { "Role": "USER" };
+        var foo = rootScope.showButton()
+        expect(ApiFactory.getUser).toHaveBeenCalled();
+        expect(foo).toBe(false);
+    })
 
     it('should be able to go to the add new evaluation page', function() {
         rootScope.newEval();
