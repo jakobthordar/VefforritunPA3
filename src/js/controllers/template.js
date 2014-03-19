@@ -72,15 +72,15 @@ app.controller("TemplateController", [
 			$scope.infoSubmitted = true; 
 		});
 		$scope.submitTemplate = ( function() {
-			if ($scope.infoSubmitted && ($scope.courseQuestions.length + $scope.teacherQuestions.length > 0)) {
+			if ($scope.infoSubmitted && ($scope.courseQuestions.length + $scope.teacherQuestions.length + $scope.teacherOptionQuestions.length + $scope.courseOptionQuestions.length > 0)) {
 				var submitData = {
 					ID: 42, //this don't matter
 					TitleIS: $scope.templateInfo.TitleIS, 
 					TitleEN: $scope.templateInfo.TitleEN, 
 					IntroTextIS: $scope.templateInfo.IntroTextIS,
 					IntroTextEN: $scope.templateInfo.IntroTextEN, 
-					CourseQuestions: $scope.courseQuestions, 
-					TeacherQuestions: $scope.teacherQuestions
+					CourseQuestions: $scope.courseQuestions.concat($scope.courseOptionQuestions), 
+					TeacherQuestions: $scope.teacherQuestions.concat($scope.teacherOptionQuestions)
 				};
 				ApiFactory.newTemplate(submitData);
 			} 

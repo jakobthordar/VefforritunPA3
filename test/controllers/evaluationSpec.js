@@ -48,6 +48,10 @@ describe('Testing the evaluation controller, it', function () {
                             ID:3
                         }
                     ];
+                },
+                saveAnswers: function(course, semester, evalID, answers) {
+                    deferred = _$q_.defer(); 
+                    return deferred.promise; 
                 }
             };
 
@@ -96,7 +100,6 @@ describe('Testing the evaluation controller, it', function () {
     //TODO: This is not really doing anything
     it('should be able to get an Evaluation by id when evaluatinID is defined', function() {
        rootScope.init(0);
-
        deferred.resolve(evalDataMock);
        rootScope.$digest();
        expect(ApiFactory.getEvaluationById).toHaveBeenCalled();
@@ -158,4 +161,44 @@ describe('Testing the evaluation controller, it', function () {
         expect(rootScope.endTime).toBe(1);
     });
 
+    it('should be able to get the template of the evaluation that it is displaying', function() {
+       /* var evaluation = {
+            TemplateID: 1
+        };
+        rootScope.getTemplate(evaluation); 
+    */
+    });
+
+    it('should have a callback function for get template that works', function() {
+        var data = {
+            CourseQuestions: [],
+            TeacherQuestions: []
+        }
+        rootScope.getTemplateCallBack(data);
+    });
+
+    it('should be able to submit answers to a template', function() {
+        rootScope.evaluationTemplate = {
+            TeacherTextQuestions: [
+                {
+                    Answer: "herp",
+                    ID: 1   
+                }
+            ],
+            CourseTextQuestions: [
+                {
+                    Answer: "derp", 
+                    ID: 2
+                }
+            ],
+            TeacherMultiQuestions: [],
+            CourseMultiQuestions: []
+        }
+        rootScope.submitAnswers();
+        rootScope.evaluationTemplate.TeacherTextQuestions[0].Answer = "";
+        rootScope.submitAnswers(); 
+        rootScope.evaluationTemplate.CourseTextQuestions[0].Answer = ""; 
+        rootScope.evaluationTemplate.TeacherTextQuestions[0].Answer = "herp";
+        rootScope.submitAnswers(); 
+    });
 });

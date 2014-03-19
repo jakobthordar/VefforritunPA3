@@ -15,6 +15,16 @@ app.controller("EvaluationController", [
 		$scope.answers = [];
 		$scope.hideError=true; 
 
+		$scope.newEvaluation = function() {
+			console.log("in new evaluation"); 
+			ApiFactory.getAllTemplates().then(function(data) {
+				$scope.templates = data; 
+				$scope.template = data[0];
+				$scope.startIsCollapsed = true; 
+				$scope.endIsCollapsed = true;
+			});
+        };
+
         $scope.init = function(evaluationID) {
             if(evaluationID !== undefined) {
                 ApiFactory.getEvaluationById(evaluationID).then(function(data) {
@@ -44,10 +54,19 @@ app.controller("EvaluationController", [
 
         $scope.getTemplate = function(evaluation) {
 			ApiFactory.getTemplateById(evaluation.TemplateID).then(function(data) {
-				$scope.evaluationTemplate = data; 
+				$scope.getTemplateCallBack(data);
+			}, function(errorMessage) {
+				console.log("failed to fetch template for evaluation " + errorMessage); 
+			});
+        };
+
+        $scope.getTemplateCallBack = function(data) {
+        	$scope.evaluationTemplate = data; 
 				//pretty ghetto solution
 				$scope.evaluationTemplate.CourseTextQuestions = [];
 				$scope.evaluationTemplate.CourseMultiQuestions = []; 
+				$scope.evaluationTemplate.TeacherTextQuestions = []; 
+				$scope.evaluationTemplate.TeacherMultiQuestions = []; 
 
 
 				var question = ""; 
@@ -57,48 +76,36 @@ app.controller("EvaluationController", [
 						Question: $scope.evaluationTemplate.CourseQuestions[i].TextIS,
 						ID: $scope.evaluationTemplate.CourseQuestions[i].ID, 
 						Answer: "",
-						Options: $scope.evaluationTemplate[i].Answers
+						Options: $scope.evaluationTemplate.CourseQuestions[i].Answers
 					};
 					if ($scope.evaluationTemplate.CourseQuestions[i].Answers.length === 0) {
-						$scope.evaluationTemplate.CourseAnswers.push(question);
+						$scope.evaluationTemplate.CourseTextQuestions.push(question);
 					} 
 					else {
+						question.Selected = question.Options[0]; 
 						$scope.evaluationTemplate.CourseMultiQuestions.push(question);
 					}
 				}				
-				$scope.evaluationTemplate.TeacherTextQuestions = []; 
-				$scope.evaluationTemplate.TeacherMultiQuestions = []; 
 				for (i = 0; i < $scope.evaluationTemplate.TeacherQuestions.length; i++) {
 					question = {
 						Question: $scope.evaluationTemplate.TeacherQuestions[i].TextIS,
 						ID: $scope.evaluationTemplate.TeacherQuestions[i].ID, 
 						Answer: "",
-						Options: $scope.evaluationTempalte[i].Answers
+						Options: $scope.evaluationTemplate.TeacherQuestions[i].Answers
 					};
 					if ($scope.evaluationTemplate.TeacherQuestions[i].Answers.length === 0) {
-						$scope.evaluationTemplate.TeacherAnswers.push(question);
+						$scope.evaluationTemplate.TeacherTextQuestions.push(question);
 					}
 					else {
-						$scope.evaluationTemplate.push(question);
+						question.Selected = question.Options[0]; 
+						$scope.evaluationTemplate.TeacherMultiQuestions.push(question);
 					}
 					
 				}
 				$scope.evaluationTemplate.CourseOptionAnswers = []; 
-
-			}, function(errorMessage) {
-				console.log("failed to fetch template for evaluation " + errorMessage); 
-			});
         };
 
-        $scope.newEvaluation = function() {
-			console.log("in new evaluation"); 
-			ApiFactory.getAllTemplates().then(function(data) {
-				$scope.templates = data; 
-				$scope.template = data[0];
-				$scope.startIsCollapsed = true; 
-				$scope.endIsCollapsed = true;
-			});
-        };
+        
         //New evaluation functions
 		$scope.templates = []; 
 		$scope.template = $scope.templates[0];
@@ -191,31 +198,48 @@ app.controller("EvaluationController", [
 		};
 
 		$scope.submitAnswers = function() {
-			for (var i = 0; i < $scope.evaluationTemplate.TeacherAnswers.length; i++) {
-				if ($scope.evaluationTemplate.TeacherAnswers[i].Answer === "") {
+			//Check if any answers are empty
+			for (var i = 0; i < $scope.evaluationTemplate.TeacherTextQuestions.length; i++) {
+				if ($scope.evaluationTemplate.TeacherTextQuestions[i].Answer === "") {
 					$scope.hideError = false; 
 					return; 
 				}
 			}
-			for (i = 0; i < $scope.evaluationTemplate.CourseAnswers.length; i++) {
-				if ($scope.evaluationTemplate.CourseAnswers[i].Answer === "") {
+			for (i = 0; i < $scope.evaluationTemplate.CourseTextQuestions.length; i++) {
+				if ($scope.evaluationTemplate.CourseTextQuestions[i].Answer === "") {
 					$scope.hideError = false; 
 					return; 
 				}
 			}
+
+
 			retObjs = []; 
-			for (i = 0; i < $scope.evaluationTemplate.TeacherAnswers.length; i++) {
+			for (i = 0; i < $scope.evaluationTemplate.TeacherTextQuestions.length; i++) {
 				retObjs.push({
-					QuestionID:  $scope.evaluationTemplate.TeacherAnswers.ID,
+					QuestionID:  $scope.evaluationTemplate.TeacherTextQuestions.ID,
 					TeacherSSN: null, 
-					Value: $scope.evaluationTemplate.TeacherAnswers.Answer
+					Value: $scope.evaluationTemplate.TeacherTextQuestions.Answer
 				});
 			}
-			for (i = 0; i < $scope.evaluationTemplate.CourseAnswers.length; i++) {
+			for (i = 0; i < $scope.evaluationTemplate.CourseTextQuestions.length; i++) {
 				retObjs.push({
-					QuestionID:  $scope.evaluationTemplate.CourseAnswers.ID,
+					QuestionID:  $scope.evaluationTemplate.CourseTextQuestions.ID,
 					TeacherSSN: null, 
-					Value: $scope.evaluationTemplate.CourseAnswers.Answer
+					Value: $scope.evaluationTemplate.CourseTextQuestions.Answer
+				});
+			}
+			for (i = 0; i < $scope.evaluationTemplate.TeacherMultiQuestions.length; i++) {
+				retObjs.push({
+					QuestionID: $scope.evaluationTemplate.TeacherMultiQuestions[i].ID,
+					TeacherSSN: null, 
+					Value: $scope.evaluationTemplate.TeacherMultiQuestions[i].Selected
+				});
+			}
+			for (i = 0; i < $scope.evaluationTemplate.CourseMultiQuestions.length; i++) {
+				retObjs.push({
+					QuestionID: $scope.evaluationTemplate.CourseMultiQuestions[i].ID,
+					TeacherSSN: null, 
+					Value: $scope.evaluationTemplate.CourseMultiQuestions[i].Selected
 				});
 			}
 			ApiFactory.saveAnswers('T-427-WEPO', null, $scope.evaluation.ID, retObjs).then(function(data) {

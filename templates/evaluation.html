@@ -16,6 +16,13 @@
 		</ul>
 	</form>
 
+	<ul>
+		<li ng-repeat="question in evaluationTemplate.CourseMultiQuestions">
+			<b> {{question.Question}}: </b>
+			<select ng-model="question.Selected" ng-options="o.TextEN for o in question.Options"></select><br>
+		</li>
+	</ul>	
+
 	<h3>Kennaraspurningar</h3>
 
 	<form name="teacherQuestionsForm">
@@ -26,6 +33,15 @@
 			</li>
 		</ul>
 	</form>
+
+	<ul>
+		<li ng-repeat="question in evaluationTemplate.TeacherMultiQuestions">
+			<b> {{question.Question}}: </b>
+			<select ng-model="question.Selected" ng-options="o.TextEN for o in question.Options"></select><br>
+		</li>
+	</ul>		
+
+
 
 	<button name="submitButton" class="btn btn-mini" ng-click="submitAnswers()">Submit answers</button>
 	<p ng-hide="hideError">Vinsamlegast svaraðu öllum spurningunum</p>
