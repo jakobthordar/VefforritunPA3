@@ -195,6 +195,7 @@ app.controller("EvaluationController", [
 				$scope.endTime = new Date();
 			}
 			ApiFactory.newEvaluation($scope.template.ID, $scope.startTime, $scope.endTime); 
+			$location.path('/home/');
 		};
 
 		$scope.submitAnswers = function() {
@@ -244,6 +245,7 @@ app.controller("EvaluationController", [
 			}
 			ApiFactory.saveAnswers('T-427-WEPO', null, $scope.evaluation.ID, retObjs).then(function(data) {
 				console.log("success sending answers!");
+				$location.path('/home/');
 			},
 			function(errorMessage) {
 				console.log("failed to send answers: " + errorMessage);

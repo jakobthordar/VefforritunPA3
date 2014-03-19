@@ -83,6 +83,8 @@ app.controller("TemplateController", [
 					TeacherQuestions: $scope.teacherQuestions.concat($scope.teacherOptionQuestions)
 				};
 				ApiFactory.newTemplate(submitData);
+				$location.path('/home/');
+
 			} 
 			else {
 				$scope.hideError = false; 
