@@ -26,8 +26,8 @@
 	</li>
 	<li ng-repeat="question in courseOptionQuestions">
 		<h4>Option question number: {{ question.ID }} </h4>
-		TextIS: {{ question.TextIS }} </br>
-		TextEN: {{ question.TextEN }} </br>
+		<p><b>TextIS:</b> {{ question.TextIS }} </p>
+		<p><b>TextEN:</b> {{ question.TextEN }} </p>
 		<!--Type: {{ question.Type }} </br> -->
 
 		<b>Options</b>: </br>
@@ -48,7 +48,7 @@
 			<input ng-model="question.TextIS" placeholder="TitleIS" class="form-control">
 			<input ng-model="question.TextEN" placeholder="TitleEN" class="form-control">
 			<input ng-model="question.ImageURL" placeholder="ImageURL" class="form-control">
-			<input ng-model="question.Type" placeholder="Type" class="form-control">
+			<!--<input ng-model="question.Type" placeholder="Type" class="form-control">-->
 			<p><b>Teacher or Course question: </b><select ng-model="typeSelection" ng-options="type for type in teacherOrCourse"></select></p>
 			<button class="btn btn-mini" ng-click="submitQuestion(question)">Add course question</button>
 		</form>
@@ -58,15 +58,15 @@
 	<p ng-hide="!noTeacherQuestions">You have not added any teacher questions to this template</p>
 	<li ng-repeat="teacherQuestion in teacherQuestions">
 		<h4>Text question number: {{ teacherQuestion.ID }} </h4>
-		Icelandic text: {{ teacherQuestion.TextIS }} </br>
-		English text: {{ teacherQuestion.TextEN }} </br>
-		ImageURL: {{ teacherQuestion.ImageURL }} </br>
+		<p><b>Icelandic text:</b> {{ teacherQuestion.TextIS }} </p>
+		<p><b>English text:</b> {{ teacherQuestion.TextEN }} </p>
+		<p><b>ImageURL:</b> {{ teacherQuestion.ImageURL }} </p>
 		<!--Type: {{ teacherQuestion.Type }} </br>-->
 	</li>
 	<li ng-repeat="question in teacherOptionQuestions">
 		<h4>Option question number: {{ question.ID }} </h4>
-		Icelandic text: {{ question.TextIS }} </br>
-		English text: {{ question.TextEN }} </br>
+		<p><b>Icelandic text:</b> {{ question.TextIS }} </p>
+		<p><b>English text:</b> {{ question.TextEN }} </p>
 		<!--Type: {{ question.Type }} </br>-->
 
 		<b>Options</b>: </br>
