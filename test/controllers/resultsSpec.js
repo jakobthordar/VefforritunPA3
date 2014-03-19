@@ -19,7 +19,7 @@ describe('Testing the results controller, it',function() {
             }
         ], 
     };
-    var dataDummy = {
+    var dataMock = {
         "ID": 1,
         "TemplateID": 2,
         "TemplateTitleIS": "sample string 3",
@@ -375,13 +375,13 @@ describe('Testing the results controller, it',function() {
         inject(function(_$rootScope_, _$controller_, _$q_) {
             /* This mocks the ApiFactory service */
             ApiFactory = {
-                getEvaluationsById: function(evalID) {
+                getEvaluationById: function(evalID) {
                     deferred = _$q_.defer();
                     return deferred.promise;
                 }
             };
             /* Spy on the service and call it */
-            spyOn(ApiFactory, 'getEvaluationsById').andCallThrough();
+            spyOn(ApiFactory, 'getEvaluationById').andCallThrough();
             rootScope = _$rootScope_.$new();
             /* This mocks the controller */
             ctrl = _$controller_('ResultsController', {
@@ -392,12 +392,33 @@ describe('Testing the results controller, it',function() {
     });
 
     it('should initialize correctly', function(){
-        //TODO: Data dummy will call apifactory
         rootScope.init();
-        expect(rootScope.chart).toEqual(chartMock);
-        expect(rootScope.data).toEqual(dataDummy);
+        //expect(rootScope.data).toEqual(dataMock);
+        expect(rootScope.charts).toBeDefined;
     });
 
     it('should parse data correctly', function(){
+        expect(rootScope.charts).toBeDefined;
+        expect(rootScope.charts[0]).toBeUndefined;
+        ctrl.parseData();
+        expect(rootScope.charts[0]).toBeDefined;
     });
+    it('the init func should derp', function(){
+        console.log(rootScope.test);
+        rootScope.init();
+        deferred.resolve('dataSuccess');
+        rootScope.$digest();
+        console.log(rootScope.test);
+    });
+
+    it('should make datasets correctly', function() {
+        var chart = {};
+        chart = ctrl.makeDataset(0);
+        expect(chart).toBeDefined;
+        //expect(chart.labels[0]).toEqual("sample string 2");
+        console.log(chart);
+        console.log(chart.labels);
+        console.log(chart.datasets);
+    });
+
 });

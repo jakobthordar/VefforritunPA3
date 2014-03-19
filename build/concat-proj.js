@@ -70,16 +70,7 @@ app.controller("EvaluationController", [
             }
 
             if ($location.url() == "/evaluation/new") {
-				console.log("in new evaluation"); 
-				ApiFactory.getAllTemplates().then(function(data) {
-					$scope.templates = data; 
-					$scope.template = data[0];
-					$scope.startIsCollapsed = true; 
-					$scope.endIsCollapsed = true;
-				});
-			}
-			if ($location.url() == "/evaluation/") {
-				console.log("in evaluation");
+				$scope.newEvaluation(); 
 			}
         };
         $scope.init(evalID);
@@ -88,27 +79,59 @@ app.controller("EvaluationController", [
 			ApiFactory.getTemplateById(evaluation.TemplateID).then(function(data) {
 				$scope.evaluationTemplate = data; 
 				//pretty ghetto solution
-				$scope.evaluationTemplate.CourseAnswers = [];
+				$scope.evaluationTemplate.CourseTextQuestions = [];
+				$scope.evaluationTemplate.CourseMultiQuestions = []; 
+
+
+				var question = ""; 
 				for (var i = 0; i <  $scope.evaluationTemplate.CourseQuestions.length; i++) {
-					$scope.evaluationTemplate.CourseAnswers.push({
+					//if there are no answers, this is a text question
+					question = {
 						Question: $scope.evaluationTemplate.CourseQuestions[i].TextIS,
 						ID: $scope.evaluationTemplate.CourseQuestions[i].ID, 
-						Answer: ""
-					});
-				}
-				$scope.evaluationTemplate.TeacherAnswers = []; 
+						Answer: "",
+						Options: $scope.evaluationTemplate[i].Answers
+					};
+					if ($scope.evaluationTemplate.CourseQuestions[i].Answers.length === 0) {
+						$scope.evaluationTemplate.CourseAnswers.push(question);
+					} 
+					else {
+						$scope.evaluationTemplate.CourseMultiQuestions.push(question);
+					}
+				}				
+				$scope.evaluationTemplate.TeacherTextQuestions = []; 
+				$scope.evaluationTemplate.TeacherMultiQuestions = []; 
 				for (i = 0; i < $scope.evaluationTemplate.TeacherQuestions.length; i++) {
-					$scope.evaluationTemplate.TeacherAnswers.push({
+					question = {
 						Question: $scope.evaluationTemplate.TeacherQuestions[i].TextIS,
 						ID: $scope.evaluationTemplate.TeacherQuestions[i].ID, 
-						Answer: ""
-					});
+						Answer: "",
+						Options: $scope.evaluationTempalte[i].Answers
+					};
+					if ($scope.evaluationTemplate.TeacherQuestions[i].Answers.length === 0) {
+						$scope.evaluationTemplate.TeacherAnswers.push(question);
+					}
+					else {
+						$scope.evaluationTemplate.push(question);
+					}
+					
 				}
+				$scope.evaluationTemplate.CourseOptionAnswers = []; 
+
 			}, function(errorMessage) {
 				console.log("failed to fetch template for evaluation " + errorMessage); 
 			});
         };
 
+        $scope.newEvaluation = function() {
+			console.log("in new evaluation"); 
+			ApiFactory.getAllTemplates().then(function(data) {
+				$scope.templates = data; 
+				$scope.template = data[0];
+				$scope.startIsCollapsed = true; 
+				$scope.endIsCollapsed = true;
+			});
+        };
         //New evaluation functions
 		$scope.templates = []; 
 		$scope.template = $scope.templates[0];
@@ -325,14 +348,365 @@ app.controller("ResultsController", [
     "$scope", "ApiFactory", "$location",
     function($scope, ApiFactory, $location) {
         //This is currently not in use
+        $scope.data = {
+            "ID": 1,
+            "TemplateID": 2,
+            "TemplateTitleIS": "sample string 3",
+            "TemplateTitleEN": "sample string 4",
+            "Courses": [
+                {
+                    "ID": 1,
+                    "CourseID": "sample string 2",
+                    "Semester": "sample string 3",
+                    "CourseNameIS": "sample string 4",
+                    "CourseNameEN": "sample string 5",
+                    "Questions": [
+                    {
+                        "QuestionID": 1,
+                        "TextIS": "sample string 2",
+                        "TextEN": "sample string 3",
+                        "TeacherSSN": "sample string 4",
+                        "Type": "sample string 5",
+                        "TextResults": [
+                            "sample string 1",
+                            "sample string 2",
+                            "sample string 3"
+                        ],
+                        "OptionsResults": [
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        },
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        },
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        },
+                        ]
+                    },
+                    {
+                        "QuestionID": 1,
+                        "TextIS": "sample string 2",
+                        "TextEN": "sample string 3",
+                        "TeacherSSN": "sample string 4",
+                        "Type": "sample string 5",
+                        "TextResults": [
+                            "sample string 1",
+                        "sample string 2",
+                        "sample string 3"
+                            ],
+                        "OptionsResults": [
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        },
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        },
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        }
+                        ]
+                    },
+                    {
+                        "QuestionID": 1,
+                        "TextIS": "sample string 2",
+                        "TextEN": "sample string 3",
+                        "TeacherSSN": "sample string 4",
+                        "Type": "sample string 5",
+                        "TextResults": [
+                            "sample string 1",
+                        "sample string 2",
+                        "sample string 3"
+                            ],
+                        "OptionsResults": [
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        },
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        },
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        }
+                        ]
+                    }
+                    ]
+                },
+                {
+                    "ID": 1,
+                    "CourseID": "sample string 2",
+                    "Semester": "sample string 3",
+                    "CourseNameIS": "sample string 4",
+                    "CourseNameEN": "sample string 5",
+                    "Questions": [
+                    {
+                        "QuestionID": 1,
+                        "TextIS": "sample string 2",
+                        "TextEN": "sample string 3",
+                        "TeacherSSN": "sample string 4",
+                        "Type": "sample string 5",
+                        "TextResults": [
+                            "sample string 1",
+                        "sample string 2",
+                        "sample string 3"
+                            ],
+                        "OptionsResults": [
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        },
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        },
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        }
+                        ]
+                    },
+                    {
+                        "QuestionID": 1,
+                        "TextIS": "sample string 2",
+                        "TextEN": "sample string 3",
+                        "TeacherSSN": "sample string 4",
+                        "Type": "sample string 5",
+                        "TextResults": [
+                            "sample string 1",
+                        "sample string 2",
+                        "sample string 3"
+                            ],
+                        "OptionsResults": [
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        },
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        },
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        }
+                        ]
+                    },
+                    {
+                        "QuestionID": 1,
+                        "TextIS": "sample string 2",
+                        "TextEN": "sample string 3",
+                        "TeacherSSN": "sample string 4",
+                        "Type": "sample string 5",
+                        "TextResults": [
+                            "sample string 1",
+                        "sample string 2",
+                        "sample string 3"
+                            ],
+                        "OptionsResults": [
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        },
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        },
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        }
+                        ]
+                    }
+                    ]
+                },
+                {
+                    "ID": 1,
+                    "CourseID": "sample string 2",
+                    "Semester": "sample string 3",
+                    "CourseNameIS": "sample string 4",
+                    "CourseNameEN": "sample string 5",
+                    "Questions": [
+                    {
+                        "QuestionID": 1,
+                        "TextIS": "sample string 2",
+                        "TextEN": "sample string 3",
+                        "TeacherSSN": "sample string 4",
+                        "Type": "sample string 5",
+                        "TextResults": [
+                            "sample string 1",
+                        "sample string 2",
+                        "sample string 3"
+                            ],
+                        "OptionsResults": [
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        },
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        },
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        }
+                        ]
+                    },
+                    {
+                        "QuestionID": 1,
+                        "TextIS": "sample string 2",
+                        "TextEN": "sample string 3",
+                        "TeacherSSN": "sample string 4",
+                        "Type": "sample string 5",
+                        "TextResults": [
+                            "sample string 1",
+                        "sample string 2",
+                        "sample string 3"
+                            ],
+                        "OptionsResults": [
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        },
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        },
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        }
+                        ]
+                    },
+                    {
+                        "QuestionID": 1,
+                        "TextIS": "sample string 2",
+                        "TextEN": "sample string 3",
+                        "TeacherSSN": "sample string 4",
+                        "Type": "sample string 5",
+                        "TextResults": [
+                            "sample string 1",
+                        "sample string 2",
+                        "sample string 3"
+                            ],
+                        "OptionsResults": [
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        },
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        },
+                        {
+                            "Answer": 1,
+                            "AnswerTextIS": "sample string 2",
+                            "AnswerTextEN": "sample string 3",
+                            "Weight": 4,
+                            "Count": 5
+                        }
+                        ]
+                    }
+                    ]
+                }
+            ]
+        };
+
         $scope.chart = {
-            labels : ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            labels : ["DERP", "Tuesday", "Wednesday", "Thursday", "Friday"],
             datasets : [
                 {
-                    fillColor : "rgba(151,187,205,0)",
+                    fillColor : "rgba(244,244,244,0)",
                     strokeColor : "#e67e22",
                     pointColor : "rgba(151,187,205,0)",
-                    pointStrokeColor : "#e67e22",
+                    pointStrokeColor : "#ffffff",
                     data : [4, 3, 5, 4, 6]
                 },
                 {
@@ -344,356 +718,33 @@ app.controller("ResultsController", [
                 }
             ], 
         };
-        $scope.data = {
-            "ID": 1,
-            "TemplateID": 2,
-            "TemplateTitleIS": "sample string 3",
-            "TemplateTitleEN": "sample string 4",
-            "Courses": [
-            {
-                "ID": 1,
-                "CourseID": "sample string 2",
-                "Semester": "sample string 3",
-                "CourseNameIS": "sample string 4",
-                "CourseNameEN": "sample string 5",
-                "Questions": [
-                {
-                    "QuestionID": 1,
-                    "TextIS": "sample string 2",
-                    "TextEN": "sample string 3",
-                    "TeacherSSN": "sample string 4",
-                    "Type": "sample string 5",
-                    "TextResults": [
-                        "sample string 1",
-                        "sample string 2",
-                        "sample string 3"
-                    ],
-                    "OptionsResults": [
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    },
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    },
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    }
-                    ]
-                },
-                {
-                    "QuestionID": 1,
-                    "TextIS": "sample string 2",
-                    "TextEN": "sample string 3",
-                    "TeacherSSN": "sample string 4",
-                    "Type": "sample string 5",
-                    "TextResults": [
-                        "sample string 1",
-                    "sample string 2",
-                    "sample string 3"
-                        ],
-                    "OptionsResults": [
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    },
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    },
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    }
-                    ]
-                },
-                {
-                    "QuestionID": 1,
-                    "TextIS": "sample string 2",
-                    "TextEN": "sample string 3",
-                    "TeacherSSN": "sample string 4",
-                    "Type": "sample string 5",
-                    "TextResults": [
-                        "sample string 1",
-                    "sample string 2",
-                    "sample string 3"
-                        ],
-                    "OptionsResults": [
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    },
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    },
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    }
-                    ]
+        $scope.chartData = [];
+
+        $scope.init = (function() {
+
+        });
+
+        $scope.makeDataset = (function(course) {
+            var data = { dataset: [], labels: [] };
+            for(var i = 0; i < $scope.data.Courses[course].Questions.length; i ++){
+                for(var j = 0; j < $scope.data.Courses[course].Questions[i].OptionsResults.length; j++){
+                   data.labels.push($scope.data.Courses[course].Questions[i].OptionsResults[j].AnswerTextIS);
+                   data.dataset.push($scope.data.Courses[course].Questions[i].OptionResults[j].Count);
                 }
-                ]
-            },
-            {
-                "ID": 1,
-                "CourseID": "sample string 2",
-                "Semester": "sample string 3",
-                "CourseNameIS": "sample string 4",
-                "CourseNameEN": "sample string 5",
-                "Questions": [
-                {
-                    "QuestionID": 1,
-                    "TextIS": "sample string 2",
-                    "TextEN": "sample string 3",
-                    "TeacherSSN": "sample string 4",
-                    "Type": "sample string 5",
-                    "TextResults": [
-                        "sample string 1",
-                    "sample string 2",
-                    "sample string 3"
-                        ],
-                    "OptionsResults": [
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    },
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    },
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    }
-                    ]
-                },
-                {
-                    "QuestionID": 1,
-                    "TextIS": "sample string 2",
-                    "TextEN": "sample string 3",
-                    "TeacherSSN": "sample string 4",
-                    "Type": "sample string 5",
-                    "TextResults": [
-                        "sample string 1",
-                    "sample string 2",
-                    "sample string 3"
-                        ],
-                    "OptionsResults": [
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    },
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    },
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    }
-                    ]
-                },
-                {
-                    "QuestionID": 1,
-                    "TextIS": "sample string 2",
-                    "TextEN": "sample string 3",
-                    "TeacherSSN": "sample string 4",
-                    "Type": "sample string 5",
-                    "TextResults": [
-                        "sample string 1",
-                    "sample string 2",
-                    "sample string 3"
-                        ],
-                    "OptionsResults": [
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    },
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    },
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    }
-                    ]
-                }
-                ]
-            },
-            {
-                "ID": 1,
-                "CourseID": "sample string 2",
-                "Semester": "sample string 3",
-                "CourseNameIS": "sample string 4",
-                "CourseNameEN": "sample string 5",
-                "Questions": [
-                {
-                    "QuestionID": 1,
-                    "TextIS": "sample string 2",
-                    "TextEN": "sample string 3",
-                    "TeacherSSN": "sample string 4",
-                    "Type": "sample string 5",
-                    "TextResults": [
-                        "sample string 1",
-                    "sample string 2",
-                    "sample string 3"
-                        ],
-                    "OptionsResults": [
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    },
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    },
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    }
-                    ]
-                },
-                {
-                    "QuestionID": 1,
-                    "TextIS": "sample string 2",
-                    "TextEN": "sample string 3",
-                    "TeacherSSN": "sample string 4",
-                    "Type": "sample string 5",
-                    "TextResults": [
-                        "sample string 1",
-                    "sample string 2",
-                    "sample string 3"
-                        ],
-                    "OptionsResults": [
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    },
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    },
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    }
-                    ]
-                },
-                {
-                    "QuestionID": 1,
-                    "TextIS": "sample string 2",
-                    "TextEN": "sample string 3",
-                    "TeacherSSN": "sample string 4",
-                    "Type": "sample string 5",
-                    "TextResults": [
-                        "sample string 1",
-                    "sample string 2",
-                    "sample string 3"
-                        ],
-                    "OptionsResults": [
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    },
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    },
-                    {
-                        "Answer": 1,
-                        "AnswerTextIS": "sample string 2",
-                        "AnswerTextEN": "sample string 3",
-                        "Weight": 4,
-                        "Count": 5
-                    }
-                    ]
-                }
-                ]
             }
-            ]
-        };
+            return data;
+        });
+
+        $scope.parseData = (function() {
+            for(var i = 0;i < $scope.data.Courses.length; i++){
+                $scope.chartData.push($scope.makeDataset(i));
+            }
+            //This is an array of charts
+        });
+
+
+        $scope.init();
+        $scope.parseData();
     }
 ]); 
 

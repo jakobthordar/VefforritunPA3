@@ -22,7 +22,7 @@ app.config(function($routeProvider, $provide, $httpProvider) {
 	}).when("/evaluation/", {
 		templateUrl: "templates/evaluation.html",
 		controller: "EvaluationController"
-	}).when("/results", {
+	}).when("/results/:evaluationID", {
 		templateUrl: "templates/results.html", 
 		controller: "ResultsController"
 	}).when("/", {

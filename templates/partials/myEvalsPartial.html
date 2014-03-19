@@ -1,3 +1,4 @@
 <li ng-repeat="evaluation in evaluations">
 <a class="myevalbtn {{ evaluation.Status }}" ng-href="#/evaluation/{{ evaluation.ID }}">Name: {{ evaluation.TemplateTitleIS }} - Status: {{ evaluation.Status }}</a>
+<a class="myevalbtn" ng-href="#/results/{{ evaluation.ID }}"> Show results </a>
 </li>
