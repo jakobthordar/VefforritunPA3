@@ -17,6 +17,10 @@ app.controller("HomeController", [
             $location.path("/evaluation/edit");
         });
 
+        $scope.results = (function() {
+            $location.path("/results");
+        });
+
 		$scope.newEval = (function(evaluation) {
 			$location.path("/evaluation/new");
 		}); 

@@ -1,5 +1,5 @@
 //Create the module 
-var app = angular.module("EvaluationApp", ["ui.bootstrap","ngRoute"]);
+var app = angular.module("EvaluationApp", ["angles", "ui.bootstrap","ngRoute"]);
 
 //This defines the routing throughout the app 
 app.config(function($routeProvider, $provide, $httpProvider) {
@@ -22,6 +22,9 @@ app.config(function($routeProvider, $provide, $httpProvider) {
 	}).when("/evaluation/", {
 		templateUrl: "templates/evaluation.html",
 		controller: "EvaluationController"
+	}).when("/results", {
+		templateUrl: "templates/results.html", 
+		controller: "ResultsController"
 	}).when("/", {
 		templateUrl: "templates/login.html", 
 		controller: "LoginController"
@@ -87,11 +90,19 @@ app.controller("EvaluationController", [
 				//pretty ghetto solution
 				$scope.evaluationTemplate.CourseAnswers = [];
 				for (var i = 0; i <  $scope.evaluationTemplate.CourseQuestions.length; i++) {
-					$scope.evaluationTemplate.CourseAnswers.push("");
+					$scope.evaluationTemplate.CourseAnswers.push({
+						Question: $scope.evaluationTemplate.CourseQuestions[i].TextIS,
+						ID: $scope.evaluationTemplate.CourseQuestions[i].ID, 
+						Answer: ""
+					});
 				}
 				$scope.evaluationTemplate.TeacherAnswers = []; 
 				for (i = 0; i < $scope.evaluationTemplate.TeacherQuestions.length; i++) {
-					$scope.evaluationTemplate.TeacherAnswers.push("");
+					$scope.evaluationTemplate.TeacherAnswers.push({
+						Question: $scope.evaluationTemplate.TeacherQuestions[i].TextIS,
+						ID: $scope.evaluationTemplate.TeacherQuestions[i].ID, 
+						Answer: ""
+					});
 				}
 			}, function(errorMessage) {
 				console.log("failed to fetch template for evaluation " + errorMessage); 
@@ -191,17 +202,38 @@ app.controller("EvaluationController", [
 
 		$scope.submitAnswers = function() {
 			for (var i = 0; i < $scope.evaluationTemplate.TeacherAnswers.length; i++) {
-				/*if ($scope.evaluationTemplate.TeacherAnswers[i] === "") {
-					$scope.hideError = false; 
-					return; 
-				}*/
-			}
-			for (i = 0; i < $scope.evaluationTemplate.CourseAnswers.length; i++) {
-				if ($scope.evaluationTemplate.CourseAnswers[i] === "") {
+				if ($scope.evaluationTemplate.TeacherAnswers[i].Answer === "") {
 					$scope.hideError = false; 
 					return; 
 				}
 			}
+			for (i = 0; i < $scope.evaluationTemplate.CourseAnswers.length; i++) {
+				if ($scope.evaluationTemplate.CourseAnswers[i].Answer === "") {
+					$scope.hideError = false; 
+					return; 
+				}
+			}
+			retObjs = []; 
+			for (i = 0; i < $scope.evaluationTemplate.TeacherAnswers.length; i++) {
+				retObjs.push({
+					QuestionID:  $scope.evaluationTemplate.TeacherAnswers.ID,
+					TeacherSSN: null, 
+					Value: $scope.evaluationTemplate.TeacherAnswers.Answer
+				});
+			}
+			for (i = 0; i < $scope.evaluationTemplate.CourseAnswers.length; i++) {
+				retObjs.push({
+					QuestionID:  $scope.evaluationTemplate.CourseAnswers.ID,
+					TeacherSSN: null, 
+					Value: $scope.evaluationTemplate.CourseAnswers.Answer
+				});
+			}
+			ApiFactory.saveAnswers('T-427-WEPO', null, $scope.evaluation.ID, retObjs).then(function(data) {
+				console.log("success sending answers!");
+			},
+			function(errorMessage) {
+				console.log("failed to send answers: " + errorMessage);
+			});
 		};
 
 	}
@@ -212,6 +244,7 @@ app.controller("HomeController", [
 	function($scope, ApiFactory, $location) {
 
         $scope.evaluations = [];
+        $scope.courses = [];
 
 		$scope.showButton = (function () {
             var user = ApiFactory.getUser();
@@ -221,21 +254,15 @@ app.controller("HomeController", [
 			}
             return isAdmin;
 		});
-
         $scope.editEvaluation = (function() {
+            $location.path("/evaluation/edit");
+        });
 
+        $scope.results = (function() {
+            $location.path("/results");
         });
 
 		$scope.newEval = (function(evaluation) {
-            /*ar dummyEval = {
-                "TemplateID": 0,
-                "StartDate": "2014-03-17T15:28:40.2360731+00:00",
-                "EndDate": "2014-03-17T15:28:40.2360731+00:00"
-            };
-            ApiFactory.addEvaluation(dummyEval).then(function(data) 
-            {
-                $scope.getAllEvals();
-            });*/
 			$location.path("/evaluation/new");
 		}); 
 
@@ -244,18 +271,26 @@ app.controller("HomeController", [
 		});
 
         $scope.getAllEvals = (function() {
-            $scope.status = "Waiting...";
             ApiFactory.getAllEvaluations().then(function(data) {
-                //console.log("Success, data: ", data);
                 $scope.evaluations = data;
-                $scope.status = "Success.";
-            }, function(errorMessage) {
-                //console.log("Error: " + errorMessage);
-                $scope.status = "Error: " + errorMessage;
+                console.log(data);
             });
         });
+        $scope.getMyCourses = (function() {
+            ApiFactory.getMyCourses().then(function(data) {
+                $scope.courses = data;
+                console.log(data);
+            });
+        });
+        this.init = (function() {
+            $scope.getAllEvals();
+            $scope.getMyCourses();
+            /*ApiFactory.getEvaluationById(1).then(function(data) {
+                console.log(data);
+            });*/
+        });
+        this.init();
 
-        $scope.getAllEvals();
 	}
 ]);
 
@@ -286,6 +321,382 @@ password: ""
     }
 ]); 
 
+app.controller("ResultsController", [
+    "$scope", "ApiFactory", "$location",
+    function($scope, ApiFactory, $location) {
+        //This is currently not in use
+        $scope.chart = {
+            labels : ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            datasets : [
+                {
+                    fillColor : "rgba(151,187,205,0)",
+                    strokeColor : "#e67e22",
+                    pointColor : "rgba(151,187,205,0)",
+                    pointStrokeColor : "#e67e22",
+                    data : [4, 3, 5, 4, 6]
+                },
+                {
+                    fillColor : "rgba(151,187,205,0)",
+                    strokeColor : "#f1c40f",
+                    pointColor : "rgba(151,187,205,0)",
+                    pointStrokeColor : "#f1c40f",
+                    data : [8, 3, 2, 5, 4]
+                }
+            ], 
+        };
+        $scope.data = {
+            "ID": 1,
+            "TemplateID": 2,
+            "TemplateTitleIS": "sample string 3",
+            "TemplateTitleEN": "sample string 4",
+            "Courses": [
+            {
+                "ID": 1,
+                "CourseID": "sample string 2",
+                "Semester": "sample string 3",
+                "CourseNameIS": "sample string 4",
+                "CourseNameEN": "sample string 5",
+                "Questions": [
+                {
+                    "QuestionID": 1,
+                    "TextIS": "sample string 2",
+                    "TextEN": "sample string 3",
+                    "TeacherSSN": "sample string 4",
+                    "Type": "sample string 5",
+                    "TextResults": [
+                        "sample string 1",
+                        "sample string 2",
+                        "sample string 3"
+                    ],
+                    "OptionsResults": [
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    },
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    },
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    }
+                    ]
+                },
+                {
+                    "QuestionID": 1,
+                    "TextIS": "sample string 2",
+                    "TextEN": "sample string 3",
+                    "TeacherSSN": "sample string 4",
+                    "Type": "sample string 5",
+                    "TextResults": [
+                        "sample string 1",
+                    "sample string 2",
+                    "sample string 3"
+                        ],
+                    "OptionsResults": [
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    },
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    },
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    }
+                    ]
+                },
+                {
+                    "QuestionID": 1,
+                    "TextIS": "sample string 2",
+                    "TextEN": "sample string 3",
+                    "TeacherSSN": "sample string 4",
+                    "Type": "sample string 5",
+                    "TextResults": [
+                        "sample string 1",
+                    "sample string 2",
+                    "sample string 3"
+                        ],
+                    "OptionsResults": [
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    },
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    },
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    }
+                    ]
+                }
+                ]
+            },
+            {
+                "ID": 1,
+                "CourseID": "sample string 2",
+                "Semester": "sample string 3",
+                "CourseNameIS": "sample string 4",
+                "CourseNameEN": "sample string 5",
+                "Questions": [
+                {
+                    "QuestionID": 1,
+                    "TextIS": "sample string 2",
+                    "TextEN": "sample string 3",
+                    "TeacherSSN": "sample string 4",
+                    "Type": "sample string 5",
+                    "TextResults": [
+                        "sample string 1",
+                    "sample string 2",
+                    "sample string 3"
+                        ],
+                    "OptionsResults": [
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    },
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    },
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    }
+                    ]
+                },
+                {
+                    "QuestionID": 1,
+                    "TextIS": "sample string 2",
+                    "TextEN": "sample string 3",
+                    "TeacherSSN": "sample string 4",
+                    "Type": "sample string 5",
+                    "TextResults": [
+                        "sample string 1",
+                    "sample string 2",
+                    "sample string 3"
+                        ],
+                    "OptionsResults": [
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    },
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    },
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    }
+                    ]
+                },
+                {
+                    "QuestionID": 1,
+                    "TextIS": "sample string 2",
+                    "TextEN": "sample string 3",
+                    "TeacherSSN": "sample string 4",
+                    "Type": "sample string 5",
+                    "TextResults": [
+                        "sample string 1",
+                    "sample string 2",
+                    "sample string 3"
+                        ],
+                    "OptionsResults": [
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    },
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    },
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    }
+                    ]
+                }
+                ]
+            },
+            {
+                "ID": 1,
+                "CourseID": "sample string 2",
+                "Semester": "sample string 3",
+                "CourseNameIS": "sample string 4",
+                "CourseNameEN": "sample string 5",
+                "Questions": [
+                {
+                    "QuestionID": 1,
+                    "TextIS": "sample string 2",
+                    "TextEN": "sample string 3",
+                    "TeacherSSN": "sample string 4",
+                    "Type": "sample string 5",
+                    "TextResults": [
+                        "sample string 1",
+                    "sample string 2",
+                    "sample string 3"
+                        ],
+                    "OptionsResults": [
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    },
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    },
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    }
+                    ]
+                },
+                {
+                    "QuestionID": 1,
+                    "TextIS": "sample string 2",
+                    "TextEN": "sample string 3",
+                    "TeacherSSN": "sample string 4",
+                    "Type": "sample string 5",
+                    "TextResults": [
+                        "sample string 1",
+                    "sample string 2",
+                    "sample string 3"
+                        ],
+                    "OptionsResults": [
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    },
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    },
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    }
+                    ]
+                },
+                {
+                    "QuestionID": 1,
+                    "TextIS": "sample string 2",
+                    "TextEN": "sample string 3",
+                    "TeacherSSN": "sample string 4",
+                    "Type": "sample string 5",
+                    "TextResults": [
+                        "sample string 1",
+                    "sample string 2",
+                    "sample string 3"
+                        ],
+                    "OptionsResults": [
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    },
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    },
+                    {
+                        "Answer": 1,
+                        "AnswerTextIS": "sample string 2",
+                        "AnswerTextEN": "sample string 3",
+                        "Weight": 4,
+                        "Count": 5
+                    }
+                    ]
+                }
+                ]
+            }
+            ]
+        };
+    }
+]); 
+
 app.controller("TemplateController", [
 	"$scope", "ApiFactory", "$routeParams", "$location", 
 	function($scope, ApiFactory, $routeParams, $location) {
@@ -293,37 +704,56 @@ app.controller("TemplateController", [
 		$scope.init = function() {
 			$scope.templateInfo = {}; 
 			$scope.courseQuestions = []; 
+			$scope.courseOptionQuestions = [];
 			$scope.teacherQuestions = []; 
+			$scope.teacherOptionQuestions = [];
 			$scope.infoSubmitted = false; 
 			$scope.hideQuestionForm = true; 
-			$scope.hideTeacherQuestionForm = true; 
+			$scope.hideQuestionForm = true; 
 			$scope.noTeacherQuestions = true; 
 			$scope.noCourseQuestions = true; 
 			$scope.hideError = true; 
+			$scope.typePromptToggle = true; 
+			$scope.hideOptionButton=true;
+			$scope.questionOptions = [];
+			$scope.hideOptionEntry=true; 
+			$scope.hideMultipleQuestionForm = true; 
+			$scope.hideAddQuestionButton = false; 
+			$scope.hideSubmitButton = true; 
+			$scope.teacherOrCourse= ["Teacher", "Course"]; 
+			$scope.typeSelection = $scope.teacherOrCourse[0];
 		};
 		$scope.submitQuestion = ( function(question) {
-			$scope.courseQuestions.push( {
-				ID: $scope.courseQuestions.length,
+			var newQuestion = {
 				TextIS: question.TextIS, 
 				TextEN: question.TextEN, 
 				ImageURL: question.ImageURL, 
-				Type: question.Type
-			});
+				Type: "text"
+			};
+			if ($scope.typeSelection === "Teacher") {
+				newQuestion.ID = $scope.teacherQuestions.length; 
+				$scope.teacherQuestions.push(newQuestion);
+				$scope.noTeacherQuestions = false; 
+			}
+			if ($scope.typeSelection === "Course") {
+				newQuestion.ID = $scope.courseQuestions.length;
+				$scope.courseQuestions.push(newQuestion);
+				$scope.noCourseQuestions = false;
+			}
 			$scope.hideQuestionForm = true; 
 			question.ID = ""; 
 			question.TextIS = ""; 
 			question.TextEN = ""; 
 			question.ImageURL = ""; 
 			question.Type = ""; 
-			$scope.noCourseQuestions = false;
 		});
-		$scope.submitTeacherQuestion = ( function(teacherQuestion) {
+		/*$scope.submitTeacherQuestion = ( function(teacherQuestion) {
 			$scope.teacherQuestions.push( {
 				ID: $scope.teacherQuestions.length, 
 				TextIS: teacherQuestion.TextIS, 
 				TextEN: teacherQuestion.TextEN, 
 				ImageURL: teacherQuestion.ImageURL, 
-				Type: teacherQuestion.Type
+				Type: "text"
 			});
 			$scope.hideTeacherQuestionForm = true; 
 			teacherQuestion.ID = ""; 
@@ -332,12 +762,9 @@ app.controller("TemplateController", [
 			teacherQuestion.ImageURL = ""; 
 			teacherQuestion.Type = ""; 
 			$scope.noTeacherQuestions = false; 
-		});
+		});*/
 		$scope.displayQuestionForm = ( function() {
 			$scope.hideQuestionForm = false; 
-		});
-		$scope.displayTeacherQuestionForm = ( function() {
-			$scope.hideTeacherQuestionForm = false; 
 		});
 		$scope.submitTemplateInfo = ( function(templateInfo) {
 			$scope.templateInfo = templateInfo;
@@ -360,6 +787,80 @@ app.controller("TemplateController", [
 				$scope.hideError = false; 
 			}
 		});
+		$scope.typePrompt = ( function() {
+			$scope.typePromptToggle = !$scope.typePromptToggle; 
+			$scope.hideAddQuestionButton = !$scope.hideAddQuestionButton;
+		});
+		$scope.addTextQuestion = ( function() {
+			$scope.typePromptToggle = !$scope.typePromptToggle; 
+			$scope.hideQuestionForm = !$scope.hideQuestionForm; 
+		});
+		$scope.addMultipleChoiceQuestion = ( function() {
+			$scope.typePromptToggle = !$scope.typePromptToggle; 
+			$scope.hideMultipleQuestionForm = !$scope.hideMultipleQuestionForm; 
+		});
+		$scope.addOption = (function() {
+			if(!$scope.hideOptionButton) {
+				$scope.hideOptionButton = true;
+			}
+			$scope.hideOptionEntry = !$scope.hideOptionEntry; 
+		}); 
+		$scope.optionSubmit = (function() {
+			$scope.hideOptionEntry = !$scope.hideOptionEntry; 
+			$scope.questionOptions.push({
+				No: $scope.questionOptions.length + 1, 
+				TextIS: $scope.optionEntryIS, 
+				TextEN: $scope.optionEntryEN, 
+				Weight: $scope.optionEntryWeight,
+				ImageURL: $scope.optionEntryImageURL
+			}); 
+			$scope.optionEntryIS = "";
+			$scope.optionEntryEN = "";
+			$scope.optionEntryWeight = ""; 
+			$scope.optionEntryImageURL = ""; 
+			$scope.hideSubmitButton = false;
+		});
+		$scope.submitOptionQuestion = (function(optionQuestion) {
+			var answers = [];
+			for (var i = 0; i < $scope.questionOptions.length; i++) {
+				answers.push({
+					ID: i, 
+					TextIS: $scope.questionOptions[i].TextIS, 
+					TextEN: $scope.questionOptions[i].TextEN, 
+					Weight: $scope.questionOptions[i].Weight,
+					ImageURL: $scope.questionOptions[i].ImageURL
+				});
+			}
+			$scope.questionOptions = [];
+			var question = {
+				TextIS: optionQuestion.TextIS, 
+				TextEN: optionQuestion.TextEN, 
+				ImageURL: optionQuestion.ImageURL, 
+				Answers: answers,
+				Type: "multi"
+			};
+			if ($scope.typeSelection === "Teacher") {
+				question.ID = $scope.teacherOptionQuestions.length; 
+				$scope.teacherOptionQuestions.push(question);
+				console.log("Teacher option questions: " + $scope.teacherOptionQuestions.length);
+				$scope.noTeacherQuestions = false; 
+			}
+			if ($scope.typeSelection === "Course") {
+				question.ID = $scope.courseOptionQuestions.length;
+				$scope.courseOptionQuestions.push(question);
+				console.log("Course option questions: " + $scope.courseOptionQuestions.length);
+				$scope.noCourseQuestions = false;
+			}
+			
+
+			$scope.hideMultipleQuestionForm = true; 
+			$scope.typePromptToggle = true;
+			optionQuestion.ID = ""; 
+			optionQuestion.TextIS = ""; 
+			optionQuestion.TextEN = ""; 
+			optionQuestion.ImageURL = ""; 
+			optionQuestion.Type = ""; 
+		});
 		$scope.init();	
 	}
 ]);
@@ -369,37 +870,14 @@ app.directive('myEvals', function() {
         restrict: 'E',
         controller: 'HomeController',
         templateUrl: 'templates/partials/myEvalsPartial.html',
-        replace: true,
-        link: function(scope, element, attr, homeCtrl){
-        },
     };
 });
 
-app.directive('myPane', function() {
-    return {
-        require: '^myTabs',
+app.directive('myChart', function() {
+    return {
         restrict: 'E',
-        transclude: true,
-        scope: {
-            title: '@'
-        },
-        link: function(scope, element, attrs, tabsCtrl) {
-            tabsCtrl.addPane(scope);
-        },
-        templateUrl: 'my-pane.html'
-    };
-});
-
-app.directive('myAllEvaluations', function() {
-    return {
-        restrict: 'E',
-        transclude: true,
-        require: '^homeController',
-        scope: false,
-        templateUrl: 'my-tabs.html',
-        link: function(scope, element, attrs, homeCtrl) {
-
-        },
+        controller: 'ResultsController',
+        templateUrl: 'templates/partials/myChartPartial.html',
     };
 });
 

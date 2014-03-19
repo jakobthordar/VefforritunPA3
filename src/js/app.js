@@ -1,5 +1,5 @@
 //Create the module 
-var app = angular.module("EvaluationApp", ["ui.bootstrap","ngRoute", "angles"]);
+var app = angular.module("EvaluationApp", ["angles", "ui.bootstrap","ngRoute"]);
 
 //This defines the routing throughout the app 
 app.config(function($routeProvider, $provide, $httpProvider) {
@@ -22,6 +22,9 @@ app.config(function($routeProvider, $provide, $httpProvider) {
 	}).when("/evaluation/", {
 		templateUrl: "templates/evaluation.html",
 		controller: "EvaluationController"
+	}).when("/results", {
+		templateUrl: "templates/results.html", 
+		controller: "ResultsController"
 	}).when("/", {
 		templateUrl: "templates/login.html", 
 		controller: "LoginController"
