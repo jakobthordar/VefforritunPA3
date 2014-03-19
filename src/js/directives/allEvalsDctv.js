@@ -3,8 +3,5 @@ app.directive('myEvals', function() {
         restrict: 'E',
         controller: 'HomeController',
         templateUrl: 'templates/partials/myEvalsPartial.html',
-        replace: true,
-        link: function(scope, element, attr, homeCtrl){
-        },
     };
 });

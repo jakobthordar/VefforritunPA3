@@ -11,6 +11,14 @@ module.exports = function(config) {
     // frameworks to use
     frameworks: ['jasmine'],
 
+    preprocessors: {
+        'src/js/**/*.js': 'coverage',
+        'templates/partials/*.html': ['ng-html2js']
+    },
+
+    ngHtml2JsPreprocessors: {
+        moduleName: 'templates'
+    },
 
     // list of files / patterns to load in the browser
     files: [
@@ -21,6 +29,7 @@ module.exports = function(config) {
       'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'bower_components/angular-route/angular-route.js',
       'bower_components/angular-mocks/angular-mocks.js',
+      'templates/partials/*.html',
       'src/js/**/*.js',
       'test/**/*.js'
     ],
@@ -36,9 +45,6 @@ module.exports = function(config) {
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
     reporters: ['progress', 'coverage'],
 
-    preprocessors: {
-        'src/js/**/*.js': 'coverage',
-    },
 
     // web server port
     port: 9876,

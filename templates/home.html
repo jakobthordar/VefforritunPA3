@@ -1,6 +1,18 @@
-<h1>Evaluations</h1>
-<ul>
-    <my-evals></my-evals>
-	<button ng-show="showButton()" class="btn btn-mini" ng-click="newEval()">Add new evaluation</button>
-	<button ng-show="showButton()" class="btn btn-mini" ng-click="newTemplate()">Add new template</button>
-</ul>
+<div class="homecontainer">
+    <div class ="evaluationscontainer">
+        <h1>Evaluations</h1>
+        <ul>
+            <my-evals></my-evals>
+            <button ng-show="showButton()" class="btn btn-mini" ng-click="newEval()">Add new evaluation</button>
+            <button ng-show="showButton()" class="btn btn-mini" ng-click="newTemplate()">Add new template</button>
+        </ul>
+    </div>
+    <div class="coursescontainer">
+        <h1>Your courses</h1>
+        <ul class="courseslist">
+            <li ng-repeat="course in courses">
+                <span class="myevalbtn open course">{{ course.CourseID }}</span>
+            </li>
+        </ul>
+    </div>
+</div>

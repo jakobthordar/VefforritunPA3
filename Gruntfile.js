@@ -31,6 +31,15 @@ module.exports = function(grunt) {
                 configFile: 'karma.conf.js'
             }
         },
+        less: {
+          development: {
+            options: {
+            },
+            files: {
+                "src/css/result.css": "src/less/myEvalsButton.less"
+            }
+          },
+        },
     });
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -43,5 +52,5 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
 
     // Default task(s).
-    grunt.registerTask('default', ['jshint', 'uglify', 'concat', 'karma']);
+    grunt.registerTask('default', ['jshint', 'uglify', 'concat', 'less', 'karma']);
 };

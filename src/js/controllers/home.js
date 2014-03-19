@@ -26,15 +26,15 @@ app.controller("HomeController", [
 		});
 
         $scope.getAllEvals = (function() {
-            console.log("Evaluations");
             ApiFactory.getAllEvaluations().then(function(data) {
                 $scope.evaluations = data;
+                console.log(data);
             });
         });
         $scope.getMyCourses = (function() {
-            console.log("Courses");
             ApiFactory.getMyCourses().then(function(data) {
                 $scope.courses = data;
+                console.log(data);
             });
         });
         this.init = (function() {

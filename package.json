@@ -20,6 +20,7 @@
     "karma-phantomjs-launcher": "^0.1.2",
     "grunt-karma": "~0.8.0",
     "grunt-contrib-watch": "^0.5.3",
-    "karma-coverage": "^0.2.0"
+    "karma-coverage": "^0.2.0",
+    "karma-ng-html2js-preprocessor": "^0.1.0"
   }
 }
